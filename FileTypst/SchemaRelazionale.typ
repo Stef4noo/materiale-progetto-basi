@@ -30,15 +30,15 @@ Lo schema ristrutturato contiene solamente costrutti mappabili in corrispettivi 
 - *Produzione*(#underline[Id_Canzone, CF_tecnico], Ruolo)
   - Produzione.Id_Canzone -> Canzone.Id
   - Produzione.CF_tecnico -> Tecnico.CF 
-- *Tecnico*(#underline[Nome, Cognome, Nascita], Nazionalità)
+- *Tecnico*(#underline[CF], Nome, Cognome, Nascita, Nazionalità)
 - *Artista*(#underline[Nome_D'Arte], Nome_CasaDiscografica)
   - Artista.Nome_CasaDiscografica -> CasaDiscografica.Nome
 - *CasaDiscografica*(#underline[Nome], Sede_legale, Album_Id)
   - CasaDiscografica.Album_Id -> Album.Id
-- *Singolo*(#underline[CF], nazionalità, Nome)
-  - Singolo.Nome = Artista.Nome_D'arte
+- *Singolo*(#underline[CF], Nome, Cognome, Nazionalità, NomeArte)
+  - Singolo.NomeArte = Artista.Nome_D'arte
 - *Compone*(#underline[CF_Singolo, Id_Band])
   - Compone.CF_Singolo -> Singolo.CF
   - Compone.Id_Band -> Band.Id
-- *Band*(#underline[Id], Numero_membri, Nome)
-  - Band.Nome -> Artista.Nome_D'arte
+- *Band*(#underline[Id], Numero_membri, NomeBand)
+  - Band.NomeBand -> Artista.Nome_D'arte
