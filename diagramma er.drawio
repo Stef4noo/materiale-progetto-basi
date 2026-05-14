@@ -379,7 +379,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="Kx5HZ5dptIjv3k3y7CfK-52" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="ruolo" vertex="1">
-          <mxGeometry height="30" width="60" x="140" y="377.5" as="geometry" />
+          <mxGeometry height="30" width="60" x="155" y="377.5" as="geometry" />
         </mxCell>
         <mxCell id="Kx5HZ5dptIjv3k3y7CfK-59" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="nickname" vertex="1">
           <mxGeometry height="30" width="60" x="-15" y="570" as="geometry" />
