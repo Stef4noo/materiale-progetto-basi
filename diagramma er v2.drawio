@@ -469,6 +469,9 @@
         <mxCell id="nIpRQ9BrXWyxdQVIDCW--16" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="(0:N)" vertex="1">
           <mxGeometry height="30" width="60" x="340" y="290" as="geometry" />
         </mxCell>
+        <mxCell id="nIpRQ9BrXWyxdQVIDCW--17" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Idea di cui non sono sicuro, per ora ignora pls&lt;/h1&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="120" width="180" x="330" y="-170" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
