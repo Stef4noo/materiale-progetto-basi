@@ -32,11 +32,11 @@ CREATE TABLE Canzone (
 );
 
 CREATE TABLE Tecnico (
-    CF VARCHAR(16) PRIMARY KEY,
-    Nome VARCHAR(20) NOT NULL,
-    Cognome VARCHAR(20) NOT NULL,
-    Nascita DATE NOT NULL,
+    Nome VARCHAR(20),
+    Cognome VARCHAR(20),
+    Data_Nascita DATE,
     Nazionalita VARCHAR(20) NOT NULL
+    PRIMARY KEY (Nome, Cognome, Data_Nascita)
 );
 
 CREATE TABLE CasaDiscografica (
@@ -53,11 +53,12 @@ CREATE TABLE Artista (
 );
 
 CREATE TABLE Singolo (
-    CF VARCHAR(16) PRIMARY KEY,
-    Nome VARCHAR(20) NOT NULL,
-    Cognome VARCHAR(20) NOT NULL,
+    Nome VARCHAR(20),
+    Cognome VARCHAR(20),
+    Data_Nascita DATE,
     Nazionalita VARCHAR(20) NOT NULL,
     NomeArte VARCHAR(20) NOT NULL,
+    PRIMARY KEY (Nome, Cognome, Nascita),
     FOREIGN KEY (NomeArte) REFERENCES Artista(Nome_DArte)
 );
 
@@ -99,13 +100,16 @@ CREATE TABLE Rilascio (
 
 CREATE TABLE Produzione (
     Id_Canzone INT,
-    CF_Tecnico VARCHAR(16),
-    Ruolo VARCHAR(20) NOT NULL,
+    Nome_Tecnico VARCHAR(20),
+    Cognome_Tecnico VARCHAR(20),
+    Data_Nascita_Tecnico DATE,
+    Ruolo VARCHAR(20),
     PRIMARY KEY (Id_Canzone, CF_Tecnico),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (CF_Tecnico) REFERENCES Tecnico(CF)
 );
 
+-- Relazione cambiata
 CREATE TABLE Compone (
     CF_Singolo VARCHAR(16),
     Id_Band INT,
