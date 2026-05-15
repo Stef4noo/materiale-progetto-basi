@@ -99,7 +99,7 @@ CREATE TABLE Rilascio (
 
 CREATE TABLE Produzione (
     Id_Canzone INT,
-    CF_Tecnico VARCHAR(10),
+    CF_Tecnico VARCHAR(16),
     Ruolo VARCHAR(20) NOT NULL,
     PRIMARY KEY (Id_Canzone, CF_Tecnico),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
