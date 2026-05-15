@@ -1,17 +1,3 @@
-DROP TABLE IF EXISTS Compone;
-DROP TABLE IF EXISTS Produzione;
-DROP TABLE IF EXISTS Rilascio;
-DROP TABLE IF EXISTS Creazione;
-DROP TABLE IF EXISTS Campione;
-DROP TABLE IF EXISTS Singolo;
-DROP TABLE IF EXISTS Band;
-DROP TABLE IF EXISTS Artista;
-DROP TABLE IF EXISTS CasaDiscografica;
-DROP TABLE IF EXISTS Tecnico;
-DROP TABLE IF EXISTS Canzone;
-DROP TABLE IF EXISTS Album;
-DROP TABLE IF EXISTS Utente;
-
 CREATE TABLE Utente (
     Email VARCHAR(30) PRIMARY KEY,
     Nickname VARCHAR(20) NOT NULL
@@ -83,8 +69,8 @@ CREATE TABLE Campione (
 CREATE TABLE Creazione (
     Id_Canzone INT,
     Nome_Artista VARCHAR(20),
-    Ruolo VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Id_Canzone, Nome_Artista),
+    Ruolo VARCHAR(20),
+    PRIMARY KEY (Id_Canzone, Nome_Artista, Ruolo),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (Nome_Artista) REFERENCES Artista(Nome_DArte)
 );
@@ -92,8 +78,8 @@ CREATE TABLE Creazione (
 CREATE TABLE Rilascio (
     Id_Canzone INT,
     Id_Album INT,
-    Numero_traccia INT NOT NULL,
-    PRIMARY KEY (Id_Canzone, Id_Album),
+    Numero_traccia INT,
+    PRIMARY KEY (Id_Canzone, Id_Album, Numero_traccia),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (Id_Album) REFERENCES Album(Id)
 );
@@ -102,9 +88,9 @@ CREATE TABLE Produzione (
     Id_Canzone INT,
     Nome_Tecnico VARCHAR(20),
     Cognome_Tecnico VARCHAR(20),
-    Data_Nascita_Tecnico DATE,
+    Data_Nascita_Tecnico DATE NOT NULL,
     Ruolo VARCHAR(20),
-    PRIMARY KEY (Id_Canzone, CF_Tecnico),
+    PRIMARY KEY (Id_Canzone, CF_Tecnico, Ruolo),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (CF_Tecnico) REFERENCES Tecnico(CF)
 );

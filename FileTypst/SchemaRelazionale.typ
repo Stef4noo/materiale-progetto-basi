@@ -8,6 +8,7 @@ Lo schema ristrutturato contiene solamente costrutti mappabili in corrispettivi 
 #underline[*NOTE*] (appunti provvisori): 
 - Nelle slide non ho trovato come trattare come chiave esterna una chiave multivalore, penso si faccia così, se sai come si fa dimmi pure
 - La relazione Compone è stata cambiata, devo ancora modificarla
+- Contratto tra artista e casa discografica prima era una relazione 1 a n, ora è n a n, è giusto? Se si devo aggiungere la tabella Contratto e togliere da artista le cose di Contratto.
 
 #line(length: 100%, stroke: 0.5pt)
 
