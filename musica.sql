@@ -100,7 +100,7 @@ CREATE TABLE Produzione (
 CREATE TABLE Compone (
     Nome_Singolo VARCHAR(20),
     Cognome_Singolo VARCHAR(20),
-    Nascita_Singolo DATE,
+    Data_Nascita_Singolo DATE,
     Id_Band INT,
     PRIMARY KEY (Nome_Singolo, Cognome_Singolo, Data_Nascita_Singolo, Id_Band),
     FOREIGN KEY (Nome_Singolo, Cognome_Singolo, Data_Nascita_Singolo) REFERENCES Singolo(Nome, Cognome, Nascita),
