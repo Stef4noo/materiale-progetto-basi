@@ -21,7 +21,7 @@ CREATE TABLE Tecnico (
     Nome VARCHAR(20),
     Cognome VARCHAR(20),
     Data_Nascita DATE,
-    Nazionalita VARCHAR(20) NOT NULL
+    Nazionalita VARCHAR(20) NOT NULL,
     PRIMARY KEY (Nome, Cognome, Data_Nascita)
 );
 
@@ -44,7 +44,7 @@ CREATE TABLE Singolo (
     Data_Nascita DATE,
     Nazionalita VARCHAR(20) NOT NULL,
     NomeArte VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Nome, Cognome, Nascita),
+    PRIMARY KEY (Nome, Cognome, Data_Nascita),
     FOREIGN KEY (NomeArte) REFERENCES Artista(Nome_DArte)
 );
 
@@ -90,16 +90,19 @@ CREATE TABLE Produzione (
     Cognome_Tecnico VARCHAR(20),
     Data_Nascita_Tecnico DATE NOT NULL,
     Ruolo VARCHAR(20),
-    PRIMARY KEY (Id_Canzone, CF_Tecnico, Ruolo),
+    PRIMARY KEY (Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Nascita_Tecnico, Ruolo),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
-    FOREIGN KEY (CF_Tecnico) REFERENCES Tecnico(CF)
+    FOREIGN KEY (Nome_Tecnico, Cognome_Tecnico, Nascita_Tecnico) REFERENCES Tecnico(Nome, Cognome, Nascita)
+);
 );
 
 -- Relazione cambiata
 CREATE TABLE Compone (
-    CF_Singolo VARCHAR(16),
+    Nome_Singolo VARCHAR(20),
+    Cognome_Singolo VARCHAR(20),
+    Nascita_Singolo DATE,
     Id_Band INT,
-    PRIMARY KEY (CF_Singolo, Id_Band),
-    FOREIGN KEY (CF_Singolo) REFERENCES Singolo(CF),
+    PRIMARY KEY (Nome_Singolo, Cognome_Singolo, Data_Nascita_Singolo, Id_Band),
+    FOREIGN KEY (Nome_Singolo, Cognome_Singolo, Data_Nascita_Singolo) REFERENCES Singolo(Nome, Cognome, Nascita),
     FOREIGN KEY (Id_Band) REFERENCES Band(Id)
 );
