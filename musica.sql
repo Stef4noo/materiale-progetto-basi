@@ -94,7 +94,6 @@ CREATE TABLE Produzione (
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (Nome_Tecnico, Cognome_Tecnico, Nascita_Tecnico) REFERENCES Tecnico(Nome, Cognome, Nascita)
 );
-);
 
 -- Relazione cambiata
 CREATE TABLE Compone (
