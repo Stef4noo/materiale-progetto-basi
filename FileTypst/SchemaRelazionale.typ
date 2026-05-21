@@ -16,7 +16,7 @@ Lo schema ristrutturato contiene solamente costrutti mappabili in corrispettivi 
 - *Campione*(#underline[Data_Creazione, Utente, Canzone-Id], Descrizione, pitch, bpm, echo, is_invertita)
   - Campione.Utente -> Utente.Email
   - Campione.Canzone-Id -> Canzone.Id
-- *Canzone*(#underline[Id], Data_rilascio, Titolo, Genere)
+- *Canzone*(#underline[Id], Data_rilascio, Titolo, Genere, bpm)
 - *Creazione*(#underline[Id_Canzone, Nome_Artista, Ruolo])
   - Creazione.Id_Canzone ->  Canzone.Id
   - Creazione.Nome_Artista -> Artista.Nome_D'Arte

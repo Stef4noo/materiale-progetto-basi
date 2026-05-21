@@ -14,7 +14,8 @@ CREATE TABLE Canzone (
     Id INT PRIMARY KEY,
     Data_rilascio DATE NOT NULL,
     Titolo VARCHAR(20) NOT NULL,
-    GENERE VARCHAR(20) NOT NULL
+    GENERE VARCHAR(20) NOT NULL,
+    bpm INT NOT NULL
 );
 
 CREATE TABLE Tecnico (
@@ -61,6 +62,7 @@ CREATE TABLE Campione (
     Canzone_Id INT NOT NULL,
     Descrizione VARCHAR(100) NOT NULL,
     pitch INT NOT NULL, 
+    bpm INT NOT NULL,
     PRIMARY KEY (Data_Creazione, Utente),
     FOREIGN KEY(Utente) REFERENCES Utente(Email),
     FOREIGN KEY(Canzone_Id) REFERENCES Canzone(Id)
@@ -120,13 +122,17 @@ INSERT INTO Album (Id, Nome, Anno_rilascio, Numero_tracce) VALUES
 (3, 'After Hours', '2020-03-20', 14);
 
 -- 3. CANZONI
-INSERT INTO Canzone (Id, Data_rilascio, Titolo, GENERE) VALUES
-(101, '2013-04-19', 'Get Lucky', 'Electronic'),
-(102, '2013-05-17', 'Instant Crush', 'Electronic'),
-(103, '1973-03-01', 'Time', 'Rock'),
-(104, '1973-03-01', 'Money', 'Rock'),
-(105, '2020-01-29', 'Blinding Lights', 'Pop'),
-(106, '2020-03-20', 'Save Your Tears', 'Pop');
+INSERT INTO Canzone (Id, Data_rilascio, Titolo, GENERE, bpm) VALUES
+(101, '2013-04-19', 'Get Lucky', 'Electronic', 116),
+(102, '2013-05-17', 'Instant Crush', 'Electronic', 110),
+(103, '1973-03-01', 'Time', 'Rock', 120),
+(104, '1973-03-01', 'Money', 'Rock', 122),
+(105, '2020-01-29', 'Blinding Lights', 'Pop', 171),
+(106, '2020-03-20', 'Save Your Tears', 'Pop', 118),
+
+(107, '2016-09-22', 'Starboy', 'R&B', 186),
+(108, '2016-11-18', 'I Feel It Coming', 'R&B', 123),
+(109, '2013-01-01', 'Odd Look', 'Synthwave', 115);
 
 -- 4. TECNICI
 INSERT INTO Tecnico (Nome, Cognome, Data_Nascita, Nazionalita) VALUES
@@ -169,11 +175,15 @@ INSERT INTO Compone (Nome_Singolo, Cognome_Singolo, Data_Nascita_Singolo, Id_Ban
 ('Roger', 'Waters', '1943-09-06', 2);
 
 -- 10. CAMPIONI
-INSERT INTO Campione (Data_Creazione, Utente, Canzone_Id, Descrizione, pitch) VALUES
-('2026-01-10', 'leo@email.com', 101, 'Chitarra funky intro', 0),
-('2026-01-12', 'leo@email.com', 101, 'Vocoder loop ritornello', 2),
-('2026-02-15', 'giulia@email.com', 102, 'Synth lead loop', -1),
-('2026-03-01', 'marco@email.com', 105, 'Main synth wave 80s', 0);
+INSERT INTO Campione (Data_Creazione, Utente, Canzone_Id, Descrizione, pitch, bpm) VALUES
+('2026-01-10', 'leo@email.com', 101, 'Chitarra funky intro', 0, 124),       
+('2026-01-12', 'leo@email.com', 101, 'Vocoder loop ritornello', 2, 116),    
+('2026-02-15', 'giulia@email.com', 102, 'Synth lead loop', -1, 115),       
+('2026-03-01', 'marco@email.com', 105, 'Main synth wave 80s', 0, 171),
+
+('2026-05-21', 'giulia@email.com', 101, 'Bass slap cut', 0, 116),
+('2026-05-21', 'marco@email.com', 101, 'Rhodes chords', -2, 116),
+('2026-05-20', 'marco@email.com', 103, 'Drum loop velocizzato', 4, 140);
 
 -- 11. CREAZIONE
 INSERT INTO Creazione (Id_Canzone, Nome_Artista, Ruolo) VALUES
@@ -182,7 +192,14 @@ INSERT INTO Creazione (Id_Canzone, Nome_Artista, Ruolo) VALUES
 (103, 'Pink Floyd', 'Autore'),
 (104, 'Pink Floyd', 'Autore'),
 (105, 'The Weeknd', 'Cantante'),
-(106, 'The Weeknd', 'Cantante');
+(106, 'The Weeknd', 'Cantante'),
+(107, 'The Weeknd', 'Cantante'),
+(107, 'Daft Punk', 'Produttore'), 
+(108, 'The Weeknd', 'Cantante'),
+(108, 'Daft Punk', 'Produttore'), 
+(109, 'The Weeknd', 'Cantante'),
+(109, 'Kavinsky', 'Compositore');
+
 
 -- 12. RILASCIO
 INSERT INTO Rilascio (Id_Canzone, Id_Album, Numero_traccia) VALUES
@@ -203,26 +220,17 @@ INSERT INTO Produzione (Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_
 
 -- IPOTESI DI QUERY PROVVISORIE
 
--- Query 1: Elenco delle canzoni con la relativa Casa Discografica dell'artista
-SELECT C.Titolo, A.Nome_DArte, CD.Nome AS Casa_Discografica
-FROM Canzone C
-JOIN Creazione CR ON C.Id = CR.Id_Canzone
-JOIN Artista A ON CR.Nome_Artista = A.Nome_DArte
-JOIN CasaDiscografica CD ON A.Nome_CasaDiscografica = CD.Nome;
-
--- Query 2: Trova tutti i campioni creati dall'utente inserendo il titolo della canzone campionata
-SELECT U.Nickname, CA.Descrizione, C.Titolo
-FROM Utente U
-JOIN Campione CA ON U.Email = CA.Utente
-JOIN Canzone C ON CA.Canzone_Id = C.Id;
-
 -- Query 3: Mostra i dettagli dei tecnici che hanno lavorato a canzoni di genere 'Rock'
 -- Ci sta, magari gli ordiniamo in ordine decrescente per il numero di canzoni che hanno prodotto (?)
-SELECT DISTINCT T.Nome, T.Cognome, T.Nazionalita, C.Titolo
+SELECT T.Nome, T.Cognome, T.Nazionalita, COUNT(P.Id_Canzone) AS Canzoni_Prodotte
 FROM Tecnico T
-JOIN Produzione P ON T.Nome = P.Nome_Tecnico AND T.Cognome = P.Cognome_Tecnico AND T.Data_Nascita = P.Data_Nascita_Tecnico
+JOIN Produzione P ON T.Nome = P.Nome_Tecnico 
+                 AND T.Cognome = P.Cognome_Tecnico 
+                 AND T.Data_Nascita = P.Data_Nascita_Tecnico
 JOIN Canzone C ON P.Id_Canzone = C.Id
-WHERE C.GENERE = 'Rock';
+WHERE C.GENERE = 'Rock'
+GROUP BY T.Nome, T.Cognome, T.Nazionalita
+ORDER BY Canzoni_Prodotte DESC;
 
 -- Query 4: Visualizza i brani musicali contenuti nell'album 'Random Access' con il loro numero di traccia
 SELECT R.Numero_traccia, C.Titolo, A.Nome AS Nome_Album
@@ -231,12 +239,6 @@ JOIN Canzone C ON R.Id_Canzone = C.Id
 JOIN Album A ON R.Id_Album = A.Id
 WHERE A.Nome = 'Random Access'
 ORDER BY R.Numero_traccia;
-
--- Query 5: Numero totale di canzoni rilasciate per ogni genere musicale
--- Invalida: il prof vuole che siano coinvolte almeno due tabelle :(
-SELECT GENERE, COUNT(*) AS Numero_Canzoni
-FROM Canzone
-GROUP BY GENERE;
 
 -- Query 6: Numero di campioni caricati nel sistema per ogni utente (mostrando il nickname)
 SELECT U.Nickname, COUNT(C.Data_Creazione) AS Totale_Campioni
@@ -281,5 +283,55 @@ WHERE B.NomeBand = 'Daft Punk';
 
 -- Proposte extra:
 -- * i due artisti che hanno collaborato di più assieme (sarà una query molto lunga)
+CREATE VIEW Vista_Collaborazioni AS
+SELECT 
+    C1.Nome_Artista AS Artista_1, 
+    C2.Nome_Artista AS Artista_2, 
+    COUNT(*) AS Numero_Collaborazioni
+FROM Creazione C1
+JOIN Creazione C2 ON C1.Id_Canzone = C2.Id_Canzone 
+                 AND C1.Nome_Artista < C2.Nome_Artista 
+GROUP BY C1.Nome_Artista, C2.Nome_Artista;
+
+SELECT Artista_1, Artista_2, Numero_Collaborazioni
+FROM Vista_Collaborazioni
+WHERE Numero_Collaborazioni = (SELECT MAX(Numero_Collaborazioni) FROM Vista_Collaborazioni);
+
 -- * lista di campioni velocizzati (ovvero con canzone.bpm < campione.bpm)
+SELECT 
+    Ca.Data_Creazione, 
+    Ca.Utente, 
+    C.Titolo AS Titolo_Canzone, 
+    C.bpm AS BPM_Originale, 
+    Ca.bpm AS BPM_Campione
+FROM Campione Ca
+JOIN Canzone C ON Ca.Canzone_Id = C.Id
+WHERE Ca.bpm > C.bpm;
+
 -- * lista di canzoni che usano il maggior numero in assoluto di campioni
+CREATE VIEW Vista_Conteggio_Campioni AS
+SELECT 
+    C.Id AS Canzone_Id, 
+    C.Titolo, 
+    C.GENERE, 
+    COUNT(Ca.Canzone_Id) AS Totale_Campioni
+FROM Canzone C
+JOIN Campione Ca ON C.Id = Ca.Canzone_Id
+GROUP BY C.Id, C.Titolo, C.GENERE;
+
+SELECT Canzone_Id, Titolo, GENERE, Totale_Campioni
+FROM Vista_Conteggio_Campioni
+WHERE Totale_Campioni = (SELECT MAX(Totale_Campioni) FROM Vista_Conteggio_Campioni);
+
+-- lista di canzoni di musica elettronica che usano campioni di tutti i generi eccetto musica elettronica
+SELECT Id, Titolo, GENERE
+FROM Canzone
+WHERE GENERE = 'Electronic'
+  AND Id IN (SELECT Canzone_Id FROM Campione)
+  
+  AND Id NOT IN (
+      SELECT Ca.Canzone_Id
+      FROM Campione Ca
+      JOIN Canzone C_Sorgente ON Ca.Canzone_Id = C_Sorgente.Id
+      WHERE C_Sorgente.GENERE = 'Electronic'
+  );
