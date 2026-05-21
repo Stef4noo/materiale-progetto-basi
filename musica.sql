@@ -217,6 +217,7 @@ JOIN Campione CA ON U.Email = CA.Utente
 JOIN Canzone C ON CA.Canzone_Id = C.Id;
 
 -- Query 3: Mostra i dettagli dei tecnici che hanno lavorato a canzoni di genere 'Rock'
+-- Ci sta, magari gli ordiniamo in ordine decrescente per il numero di canzoni che hanno prodotto (?)
 SELECT DISTINCT T.Nome, T.Cognome, T.Nazionalita, C.Titolo
 FROM Tecnico T
 JOIN Produzione P ON T.Nome = P.Nome_Tecnico AND T.Cognome = P.Cognome_Tecnico AND T.Data_Nascita = P.Data_Nascita_Tecnico
@@ -232,6 +233,7 @@ WHERE A.Nome = 'Random Access'
 ORDER BY R.Numero_traccia;
 
 -- Query 5: Numero totale di canzoni rilasciate per ogni genere musicale
+-- Invalida: il prof vuole che siano coinvolte almeno due tabelle :(
 SELECT GENERE, COUNT(*) AS Numero_Canzoni
 FROM Canzone
 GROUP BY GENERE;
@@ -254,12 +256,14 @@ GROUP BY CR.Nome_Artista
 HAVING COUNT(CR.Id_Canzone) > 1;
 
 -- Query 9: Generi musicali che hanno una quantità di canzoni strettamente superiore a 1, ordinati per importanza
+
 SELECT GENERE, COUNT(*) AS Quantita
 FROM Canzone
 GROUP BY GENERE
 HAVING COUNT(*) > 1;
 
 -- Query 10: Seleziona le canzoni che hanno ricevuto una somma di pitch totale dei campioni superiore o uguale a 1
+-- Ci sta
 SELECT C.Titolo, SUM(CA.pitch) AS Somma_Pitch
 FROM Canzone C
 JOIN Campione CA ON C.Id = CA.Canzone_Id
@@ -275,3 +279,7 @@ JOIN Compone CO ON S.Nome = CO.Nome_Singolo
 JOIN Band B ON CO.Id_Band = B.Id
 WHERE B.NomeBand = 'Daft Punk';
 
+-- Proposte extra:
+-- * i due artisti che hanno collaborato di più assieme (sarà una query molto lunga)
+-- * lista di campioni velocizzati (ovvero con canzone.bpm < campione.bpm)
+-- * lista di canzoni che usano il maggior numero in assoluto di campioni
