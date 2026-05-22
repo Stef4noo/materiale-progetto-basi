@@ -71,8 +71,8 @@ CREATE TABLE Campione (
 CREATE TABLE Creazione (
     Id_Canzone INT,
     Nome_Artista VARCHAR(20),
-    Ruolo VARCHAR(20),
-    PRIMARY KEY (Id_Canzone, Nome_Artista, Ruolo),
+    Ruolo VARCHAR(20) NOT NULL,
+    PRIMARY KEY (Id_Canzone, Nome_Artista),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (Nome_Artista) REFERENCES Artista(Nome_DArte)
 );
@@ -80,8 +80,8 @@ CREATE TABLE Creazione (
 CREATE TABLE Rilascio (
     Id_Canzone INT,
     Id_Album INT,
-    Numero_traccia INT,
-    PRIMARY KEY (Id_Canzone, Id_Album, Numero_traccia),
+    Numero_traccia INT NOT NULL,
+    PRIMARY KEY (Id_Canzone, Id_Album),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (Id_Album) REFERENCES Album(Id)
 );
@@ -91,8 +91,8 @@ CREATE TABLE Produzione (
     Nome_Tecnico VARCHAR(20),
     Cognome_Tecnico VARCHAR(20),
     Data_Nascita_Tecnico DATE NOT NULL,
-    Ruolo VARCHAR(20),
-    PRIMARY KEY (Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico, Ruolo),
+    Ruolo VARCHAR(20) NOT NULL,
+    PRIMARY KEY (Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico) REFERENCES Tecnico(Nome, Cognome, Data_Nascita)
 );

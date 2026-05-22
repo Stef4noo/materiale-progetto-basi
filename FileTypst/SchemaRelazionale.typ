@@ -17,14 +17,14 @@ Lo schema ristrutturato contiene solamente costrutti mappabili in corrispettivi 
   - Campione.Utente -> Utente.Email
   - Campione.Canzone-Id -> Canzone.Id
 - *Canzone*(#underline[Id], Data_rilascio, Titolo, Genere, bpm)
-- *Creazione*(#underline[Id_Canzone, Nome_Artista, Ruolo])
+- *Creazione*(#underline[Id_Canzone, Nome_Artista], Ruolo)
   - Creazione.Id_Canzone ->  Canzone.Id
   - Creazione.Nome_Artista -> Artista.Nome_D'Arte
-- *Rilascio*(#underline[Id_Canzone, Id_Album, Numero_traccia])
+- *Rilascio*(#underline[Id_Canzone, Id_Album], Numero_traccia)
   - Rilascio.Id_Canzone -> Canzone.Id
   - Rilascio.Id_Album -> Album.Id
 - *Album*(#underline[Id], Nome, Anno_rilascio, Numero_tracce)
-- *Produzione*(#underline[Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico, Ruolo])
+- *Produzione*(#underline[Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico], Ruolo)
   - Produzione.Id_Canzone -> Canzone.Id
   - (Produzione.Nome_Tecnico, Produzione.Cognome_Tecnico, Produzione.Data_Nascita_Tecnico) -> Tecnico.(Nome, Cognome, Data_Nascita) 
 - *Tecnico*(#underline[Nome, Cognome, Data_Nascita], Nazionalità)
