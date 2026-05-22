@@ -3,18 +3,17 @@ CREATE TABLE Utente (
     Nickname VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE Album (
-    Id INT PRIMARY KEY,
-    Nome varchar(20) NOT NULL,
-    Anno_rilascio DATE NOT NULL,
-    Numero_tracce INT NOT NULL
+CREATE TABLE CasaDiscografica (
+    Nome VARCHAR(20) PRIMARY KEY,
+    Sede_legale VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE Canzone (
     Id INT PRIMARY KEY,
     Data_rilascio DATE NOT NULL,
     Titolo VARCHAR(20) NOT NULL,
-    GENERE VARCHAR(20) NOT NULL,
+    Genere VARCHAR(20) NOT NULL,
+    url VARCHAR(50) NOT NULL,
     bpm INT NOT NULL
 );
 
@@ -26,34 +25,19 @@ CREATE TABLE Tecnico (
     PRIMARY KEY (Nome, Cognome, Data_Nascita)
 );
 
-CREATE TABLE CasaDiscografica (
-    Nome VARCHAR(20) PRIMARY KEY,
-    Sede_legale VARCHAR(20) NOT NULL,
-    Album_Id INT NOT NULL,
-    FOREIGN KEY (Album_Id) REFERENCES Album(Id)
+CREATE TABLE Album (
+    Id INT PRIMARY KEY,
+    Nome varchar(20) NOT NULL,
+    Data_rilascio DATE NOT NULL,
+    Numero_tracce INT NOT NULL,
+    Nome_CasaDiscografica VARCHAR(20) NOT NULL,
+    FOREIGN KEY (Nome_CasaDiscografica) REFERENCES CasaDiscografica(Nome)
 );
 
 CREATE TABLE Artista (
     Nome_DArte VARCHAR(20) PRIMARY KEY,
     Nome_CasaDiscografica VARCHAR(20) NOT NULL,
     FOREIGN KEY (Nome_CasaDiscografica) REFERENCES CasaDiscografica(Nome)
-);
-
-CREATE TABLE Singolo (
-    Nome VARCHAR(20),
-    Cognome VARCHAR(20),
-    Data_Nascita DATE,
-    Nazionalita VARCHAR(20) NOT NULL,
-    NomeArte VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Nome, Cognome, Data_Nascita),
-    FOREIGN KEY (NomeArte) REFERENCES Artista(Nome_DArte)
-);
-
-CREATE TABLE Band (
-    Id INT PRIMARY KEY,
-    Numero_membri INT NOT NULL,
-    NomeBand VARCHAR(20) NOT NULL, 
-    FOREIGN KEY (NomeBand) REFERENCES Artista(Nome_DArte)
 );
 
 CREATE TABLE Campione (
@@ -63,9 +47,40 @@ CREATE TABLE Campione (
     Descrizione VARCHAR(100) NOT NULL,
     pitch INT NOT NULL, 
     bpm INT NOT NULL,
+    has_ehco BOOL NOT NULL,
+    Is_invertita BOOL NOT NULL,
+    url VARCHAR(50) NOT NULL,
     PRIMARY KEY (Data_Creazione, Utente),
     FOREIGN KEY(Utente) REFERENCES Utente(Email),
     FOREIGN KEY(Canzone_Id) REFERENCES Canzone(Id)
+);
+
+CREATE TABLE Produzione (
+    Id_Canzone INT,
+    Nome_Tecnico VARCHAR(20),
+    Cognome_Tecnico VARCHAR(20),
+    Data_Nascita_Tecnico DATE NOT NULL,
+    Ruolo VARCHAR(20) NOT NULL,
+    PRIMARY KEY (Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico),
+    FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
+    FOREIGN KEY (Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico) REFERENCES Tecnico(Nome, Cognome, Data_Nascita)
+);
+
+CREATE TABLE Singolo (
+    Nome VARCHAR(20) NOT NULL,
+    Cognome VARCHAR(20) NOT NULL,
+    Data_Nascita DATE NOT NULL,
+    Nazionalita VARCHAR(20) NOT NULL,
+    NomeArte VARCHAR(20),
+    PRIMARY KEY (NomeArte),
+    FOREIGN KEY (NomeArte) REFERENCES Artista(Nome_DArte)
+);
+
+CREATE TABLE Band (
+    Data_Fondazione DATE NOT NULL,
+    NomeBand VARCHAR(20), 
+    PRIMARY KEY (NomeBand),
+    FOREIGN KEY (NomeBand) REFERENCES Artista(Nome_DArte)
 );
 
 CREATE TABLE Creazione (
@@ -86,104 +101,169 @@ CREATE TABLE Rilascio (
     FOREIGN KEY (Id_Album) REFERENCES Album(Id)
 );
 
-CREATE TABLE Produzione (
-    Id_Canzone INT,
-    Nome_Tecnico VARCHAR(20),
-    Cognome_Tecnico VARCHAR(20),
-    Data_Nascita_Tecnico DATE NOT NULL,
-    Ruolo VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico),
-    FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
-    FOREIGN KEY (Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico) REFERENCES Tecnico(Nome, Cognome, Data_Nascita)
-);
-
--- Relazione cambiata
-CREATE TABLE Compone (
+CREATE TABLE Membro (
     Nome_Singolo VARCHAR(20),
-    Cognome_Singolo VARCHAR(20),
-    Data_Nascita_Singolo DATE,
-    Id_Band INT,
-    PRIMARY KEY (Nome_Singolo, Cognome_Singolo, Data_Nascita_Singolo, Id_Band),
-    FOREIGN KEY (Nome_Singolo, Cognome_Singolo, Data_Nascita_Singolo) REFERENCES Singolo(Nome, Cognome, Data_Nascita),
-    FOREIGN KEY (Id_Band) REFERENCES Band(Id)
+    Nome_Band VARCHAR (20),
+    PRIMARY KEY (Nome_Singolo, Nome_Band),
+    FOREIGN KEY (Nome_Singolo) REFERENCES Singolo(NomeArte),
+    FOREIGN KEY (Nome_Band) REFERENCES Band(NomeBand)
 );
-
 
 -- 1. UTENTI
 INSERT INTO Utente (Email, Nickname) VALUES
 ('leo@email.com', 'LeoProd'),
 ('giulia@email.com', 'GiuBeat'),
-('marco@email.com', 'Mark99');
+('marco@email.com', 'Mark99'),
+('alice@email.com', 'AliceSynth'),
+('bob@email.com', 'BobCrates'),
+('chloe@email.com', 'AnalogGirl'),
+('synthlord@email.com', 'MoogMaster');
 
--- 2. ALBUM
-INSERT INTO Album (Id, Nome, Anno_rilascio, Numero_tracce) VALUES
-(1, 'Random Access', '2013-05-17', 13),
-(2, 'The Dark Side', '1973-03-01', 10),
-(3, 'After Hours', '2020-03-20', 14);
+-- 2. CASE DISCOGRAFICHE
+INSERT INTO CasaDiscografica (Nome, Sede_legale) VALUES
+('Sony Music', 'New York'),
+('EMI Records', 'Londra'),
+('Universal Music', 'Santa Monica'),
+('Parlophone', 'Londra'),
+('Warner Bros', 'Burbank'),
+('Virgin Records', 'Londra'),
+('Kling Klang', 'Düsseldorf'),
+('RCA Records', 'New York'),
+('Nothing Records', 'Los Angeles');
 
--- 3. CANZONI
-INSERT INTO Canzone (Id, Data_rilascio, Titolo, GENERE, bpm) VALUES
-(101, '2013-04-19', 'Get Lucky', 'Electronic', 116),
-(102, '2013-05-17', 'Instant Crush', 'Electronic', 110),
-(103, '1973-03-01', 'Time', 'Rock', 120),
-(104, '1973-03-01', 'Money', 'Rock', 122),
-(105, '2020-01-29', 'Blinding Lights', 'Pop', 171),
-(106, '2020-03-20', 'Save Your Tears', 'Pop', 118),
+-- 3. ALBUM
+INSERT INTO Album (Id, Nome, Data_rilascio, Numero_tracce, Nome_CasaDiscografica) VALUES
+(1, 'Random Access', '2013-05-17', 13, 'Sony Music'),
+(2, 'The Dark Side', '1973-03-01', 10, 'EMI Records'),
+(3, 'After Hours', '2020-03-20', 14, 'Universal Music'),
+(4, 'OK Computer', '1997-05-21', 12, 'Parlophone'),
+(5, 'Led Zeppelin IV', '1971-11-08', 8, 'Warner Bros'),
+(6, 'Mezzanine', '1998-04-20', 11, 'Virgin Records'),
+(7, 'Trans-Europe Express', '1977-03-01', 8, 'Kling Klang'),
+(8, 'Heroes', '1977-10-14', 10, 'RCA Records'),
+(9, 'The Downward Spiral', '1994-03-08', 14, 'Nothing Records');
 
-(107, '2016-09-22', 'Starboy', 'R&B', 186),
-(108, '2016-11-18', 'I Feel It Coming', 'R&B', 123),
-(109, '2013-01-01', 'Odd Look', 'Synthwave', 115);
+-- 4. CANZONI
+INSERT INTO Canzone (Id, Data_rilascio, Titolo, Genere, url, bpm) VALUES
+(101, '2013-04-19', 'Get Lucky', 'Electronic', '/audio/get-lucky.mp3', 116),
+(102, '2013-05-17', 'Instant Crush', 'Electronic', '/audio/instant-crush.mp3', 110),
+(103, '1973-03-01', 'Time', 'Rock', '/audio/time.mp3', 120),
+(104, '1973-03-01', 'Money', 'Rock', '/audio/money.mp3', 122),
+(105, '2020-01-29', 'Blinding Lights', 'Pop', '/audio/blinding-lights.mp3', 171),
+(106, '2020-03-20', 'Save Your Tears', 'Pop', '/audio/save-your-tears.mp3', 118),
+(107, '2016-09-22', 'Starboy', 'R&B', '/audio/starboy.mp3', 186),
+(108, '2016-11-18', 'I Feel It Coming', 'R&B', '/audio/i-feel-it-coming.mp3', 123),
+(109, '2013-01-01', 'Odd Look', 'Synthwave', '/audio/odd-look.mp3', 115),
+(110, '1997-05-21', 'Paranoid Android', 'Rock', '/audio/paranoid.mp3', 82),
+(111, '1997-05-21', 'Karma Police', 'Rock', '/audio/karma.mp3', 75),
+(112, '1971-11-08', 'Stairway to Heaven', 'Rock', '/audio/stairway.mp3', 82),
+(113, '1998-04-27', 'Teardrop', 'Electronic', '/audio/teardrop.mp3', 77),
+(114, '1997-05-21', 'No Surprises', 'Rock', '/audio/nosurprises.mp3', 76),
+(115, '1977-03-01', 'Trans-Europe Express', 'Electronic', '/audio/tee.mp3', 114),
+(116, '1977-03-01', 'Showroom Dummies', 'Electronic', '/audio/showroom.mp3', 118),
+(117, '1994-03-08', 'Closer', 'Industrial', '/audio/closer.mp3', 90),
+(118, '1994-03-08', 'Hurt', 'Industrial', '/audio/hurt.mp3', 85),
+(119, '1977-09-23', 'Heroes', 'Rock', '/audio/heroes.mp3', 112),
+(120, '1994-02-25', 'March of the Pigs', 'Industrial', '/audio/pigs.mp3', 269),
+(121, '2005-04-18', 'The Hand That Feeds', 'Industrial', '/audio/hand.mp3', 135);
 
--- 4. TECNICI
+-- 5. TECNICI
 INSERT INTO Tecnico (Nome, Cognome, Data_Nascita, Nazionalita) VALUES
 ('Giorgio', 'Moroder', '1940-04-26', 'Italiana'),
 ('Alan', 'Parsons', '1948-12-20', 'Britannica'),
-('Max', 'Martin', '1971-02-26', 'Svedese');
-
--- 5. CASE DISCOGRAFICHE
-INSERT INTO CasaDiscografica (Nome, Sede_legale, Album_Id) VALUES
-('Sony Music', 'New York', 1),
-('EMI Records', 'Londra', 2),
-('Universal Music', 'Santa Monica', 3);
+('Max', 'Martin', '1971-02-26', 'Svedese'),
+('Nigel', 'Godrich', '1971-02-28', 'Britannica'),
+('Jimmy', 'Page', '1944-01-09', 'Britannica'),
+('Brian', 'Eno', '1948-05-15', 'Britannica'),
+('Mark', 'Ellis', '1960-08-16', 'Britannica');
 
 -- 6. ARTISTI
 INSERT INTO Artista (Nome_DArte, Nome_CasaDiscografica) VALUES
 ('Daft Punk', 'Sony Music'),
 ('Pink Floyd', 'EMI Records'),
 ('The Weeknd', 'Universal Music'),
-('Kavinsky', 'Universal Music');
+('Kavinsky', 'Universal Music'),
+('Thomas Bangalter', 'Sony Music'),
+('Guy-Manuel', 'Sony Music'),
+('David Gilmour', 'EMI Records'),
+('Roger Waters', 'EMI Records'),
+('Radiohead', 'Parlophone'),
+('Led Zeppelin', 'Warner Bros'),
+('Massive Attack', 'Virgin Records'),
+('Thom Yorke', 'Parlophone'),
+('Jonny Greenwood', 'Parlophone'),
+('Robert Plant', 'Warner Bros'),
+('Kraftwerk', 'Kling Klang'),
+('David Bowie', 'RCA Records'),
+('Nine Inch Nails', 'Nothing Records'),
+('Trent Reznor', 'Nothing Records'),
+('Atticus Ross', 'Nothing Records'),
+('Ralf Hutter', 'Kling Klang'),
+('Florian Schneider', 'Kling Klang');
 
--- 7. SINGOLI (Artisti Solisti o Componenti di Band)
+-- 7. SINGOLI
 INSERT INTO Singolo (Nome, Cognome, Data_Nascita, Nazionalita, NomeArte) VALUES
 ('Abel', 'Tesfaye', '1990-02-16', 'Canadese', 'The Weeknd'),
 ('Vincent', 'Belorgey', '1975-07-31', 'Francese', 'Kavinsky'),
-('Thomas', 'Bangalter', '1975-01-03', 'Francese', 'Daft Punk'),
-('Guy-Manuel', 'de Homem-Christo', '1974-02-08', 'Francese', 'Daft Punk'),
-('David', 'Gilmoure', '1946-03-06', 'Britannica', 'Pink Floyd'),
-('Roger', 'Waters', '1943-09-06', 'Britannica', 'Pink Floyd');
+('Thomas', 'Bangalter', '1975-01-03', 'Francese', 'Thomas Bangalter'),
+('Guy-Manuel', 'de Homem-Christo', '1974-02-08', 'Francese', 'Guy-Manuel'),
+('David', 'Gilmoure', '1946-03-06', 'Britannica', 'David Gilmour'),
+('Roger', 'Waters', '1943-09-06', 'Britannica', 'Roger Waters'),
+('Thomas', 'Yorke', '1968-10-07', 'Britannica', 'Thom Yorke'),
+('Jonathan', 'Greenwood', '1971-11-05', 'Britannica', 'Jonny Greenwood'),
+('Robert', 'Plant', '1948-08-20', 'Britannica', 'Robert Plant'),
+('David', 'Jones', '1947-01-08', 'Britannica', 'David Bowie'),
+('Trent', 'Reznor', '1965-05-17', 'Statunitense', 'Trent Reznor'),
+('Atticus', 'Ross', '1968-01-16', 'Britannica', 'Atticus Ross'),
+('Ralf', 'Hutter', '1946-08-20', 'Tedesca', 'Ralf Hutter'),
+('Florian', 'Schneider', '1947-04-07', 'Tedesca', 'Florian Schneider');
 
 -- 8. BAND
-INSERT INTO Band (Id, Numero_membri, NomeBand) VALUES
-(1, 2, 'Daft Punk'),
-(2, 4, 'Pink Floyd');
+INSERT INTO Band (Data_Fondazione, NomeBand) VALUES
+('1993-01-01', 'Daft Punk'),
+('1965-01-01', 'Pink Floyd'),
+('1985-01-01', 'Radiohead'),
+('1968-01-01', 'Led Zeppelin'),
+('1970-01-01', 'Kraftwerk'),
+('1988-01-01', 'Nine Inch Nails');
 
--- 9. COMPONE (Associazione Singoli -> Band)
-INSERT INTO Compone (Nome_Singolo, Cognome_Singolo, Data_Nascita_Singolo, Id_Band) VALUES
-('Thomas', 'Bangalter', '1975-01-03', 1),
-('Guy-Manuel', 'de Homem-Christo', '1974-02-08', 1),
-('David', 'Gilmoure', '1946-03-06', 2),
-('Roger', 'Waters', '1943-09-06', 2);
+-- 9. MEMBRO
+INSERT INTO Membro (Nome_Singolo, Nome_Band) VALUES
+('Thomas Bangalter', 'Daft Punk'),
+('Guy-Manuel', 'Daft Punk'),
+('David Gilmour', 'Pink Floyd'),
+('Roger Waters', 'Pink Floyd'),
+('Thom Yorke', 'Radiohead'),
+('Jonny Greenwood', 'Radiohead'),
+('Robert Plant', 'Led Zeppelin'),
+('Trent Reznor', 'Nine Inch Nails'),
+('Atticus Ross', 'Nine Inch Nails'),
+('Ralf Hutter', 'Kraftwerk'),
+('Florian Schneider', 'Kraftwerk');
 
 -- 10. CAMPIONI
-INSERT INTO Campione (Data_Creazione, Utente, Canzone_Id, Descrizione, pitch, bpm) VALUES
-('2026-01-10', 'leo@email.com', 101, 'Chitarra funky intro', 0, 124),       
-('2026-01-12', 'leo@email.com', 101, 'Vocoder loop ritornello', 2, 116),    
-('2026-02-15', 'giulia@email.com', 102, 'Synth lead loop', -1, 115),       
-('2026-03-01', 'marco@email.com', 105, 'Main synth wave 80s', 0, 171),
-
-('2026-05-21', 'giulia@email.com', 101, 'Bass slap cut', 0, 116),
-('2026-05-21', 'marco@email.com', 101, 'Rhodes chords', -2, 116),
-('2026-05-20', 'marco@email.com', 103, 'Drum loop velocizzato', 4, 140);
+INSERT INTO Campione (Data_Creazione, Utente, Canzone_Id, Descrizione, pitch, bpm, has_ehco, Is_invertita, url) VALUES
+('2026-01-10', 'leo@email.com', 101, 'Chitarra funky intro', 0, 124, FALSE, FALSE, '/samples/101_funk.wav'),
+('2026-01-12', 'leo@email.com', 101, 'Vocoder loop ritornello', 2, 116, TRUE, FALSE, '/samples/101_voc.wav'),
+('2026-02-15', 'giulia@email.com', 102, 'Synth lead loop', -1, 115, TRUE, FALSE, '/samples/102_lead.wav'),
+('2026-03-01', 'marco@email.com', 105, 'Main synth wave 80s', 0, 171, FALSE, FALSE, '/samples/105_synth.wav'),
+('2026-05-21', 'giulia@email.com', 101, 'Bass slap cut', 0, 116, FALSE, FALSE, '/samples/101_bass.wav'),
+('2026-05-21', 'marco@email.com', 101, 'Rhodes chords', -2, 116, TRUE, TRUE, '/samples/101_rhodes.wav'),
+('2026-05-20', 'marco@email.com', 103, 'Drum loop velocizzato', 4, 140, FALSE, FALSE, '/samples/103_drum.wav'),
+('2026-05-22', 'alice@email.com', 110, 'Guitar solo glitch', 3, 100, TRUE, TRUE, '/samples/110_guit.wav'),
+('2026-05-22', 'bob@email.com', 113, 'Harpsichord loop', -1, 77, TRUE, FALSE, '/samples/113_harp.wav'),
+('2026-05-23', 'bob@email.com', 113, 'Vocal breath', 0, 77, TRUE, FALSE, '/samples/113_voc.wav'),
+('2026-05-24', 'alice@email.com', 113, 'Heartbeat kick drum', 2, 85, FALSE, FALSE, '/samples/113_kick.wav'),
+('2026-05-25', 'leo@email.com', 113, 'Vinyl crackle FX', 0, 77, FALSE, TRUE, '/samples/113_vinyl.wav'),
+('2026-05-26', 'giulia@email.com', 113, 'Sub bass slide', 1, 77, FALSE, FALSE, '/samples/113_sub.wav'),
+('2026-06-01', 'synthlord@email.com', 115, 'Metal percussion hit', 0, 114, TRUE, FALSE, '/samples/115_metal.wav'),
+('2026-06-02', 'synthlord@email.com', 115, 'Synth string chord', 1, 114, FALSE, FALSE, '/samples/115_string.wav'),
+('2026-06-03', 'chloe@email.com', 115, 'Train rhythm beat', 0, 130, FALSE, FALSE, '/samples/115_train.wav'),
+('2026-06-04', 'bob@email.com', 115, 'Robotic voice "Trans"', 4, 114, TRUE, TRUE, '/samples/115_voc1.wav'),
+('2026-06-05', 'bob@email.com', 115, 'Robotic voice "Europe"', 4, 114, TRUE, TRUE, '/samples/115_voc2.wav'),
+('2026-06-06', 'leo@email.com', 115, 'Moog bassline', -2, 114, FALSE, FALSE, '/samples/115_moog.wav'),
+('2026-06-10', 'marco@email.com', 117, 'Industrial drum fill', 2, 100, FALSE, FALSE, '/samples/117_drum.wav'), 
+('2026-06-11', 'alice@email.com', 119, 'Fripp guitar wail', 3, 112, TRUE, FALSE, '/samples/119_fripp.wav');
 
 -- 11. CREAZIONE
 INSERT INTO Creazione (Id_Canzone, Nome_Artista, Ruolo) VALUES
@@ -198,8 +278,26 @@ INSERT INTO Creazione (Id_Canzone, Nome_Artista, Ruolo) VALUES
 (108, 'The Weeknd', 'Cantante'),
 (108, 'Daft Punk', 'Produttore'), 
 (109, 'The Weeknd', 'Cantante'),
-(109, 'Kavinsky', 'Compositore');
-
+(109, 'Kavinsky', 'Compositore'),
+(110, 'Thom Yorke', 'Cantante'),
+(110, 'Jonny Greenwood', 'Chitarrista'),
+(111, 'Thom Yorke', 'Cantante'),
+(111, 'Jonny Greenwood', 'Chitarrista'),
+(114, 'Thom Yorke', 'Cantante'),
+(114, 'Jonny Greenwood', 'Chitarrista'),
+(112, 'Led Zeppelin', 'Compositore'),
+(113, 'Massive Attack', 'Autore'),
+(117, 'Trent Reznor', 'Compositore'),
+(117, 'Atticus Ross', 'Tastierista'),
+(118, 'Trent Reznor', 'Compositore'),
+(118, 'Atticus Ross', 'Sintetizzatore'),
+(120, 'Trent Reznor', 'Cantante'),
+(120, 'Atticus Ross', 'Sintetizzatore'),
+(121, 'Trent Reznor', 'Compositore'),
+(121, 'Atticus Ross', 'Produttore'),
+(115, 'Kraftwerk', 'Compositore'),
+(116, 'Kraftwerk', 'Autore'),
+(119, 'David Bowie', 'Cantante');
 
 -- 12. RILASCIO
 INSERT INTO Rilascio (Id_Canzone, Id_Album, Numero_traccia) VALUES
@@ -208,81 +306,55 @@ INSERT INTO Rilascio (Id_Canzone, Id_Album, Numero_traccia) VALUES
 (103, 2, 4),
 (104, 2, 6),
 (105, 3, 4),
-(106, 3, 11);
+(106, 3, 11),
+(110, 4, 2),
+(111, 4, 6),
+(114, 4, 10),
+(112, 5, 4),
+(113, 6, 3),
+(115, 7, 1),
+(116, 7, 3),
+(117, 9, 5),
+(118, 9, 14),
+(119, 8, 3),
+(120, 9, 4),
+(121, 9, 8);
 
 -- 13. PRODUZIONE
 INSERT INTO Produzione (Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico, Ruolo) VALUES
 (101, 'Giorgio', 'Moroder', '1940-04-26', 'Produttore Associato'),
 (103, 'Alan', 'Parsons', '1948-12-20', 'Ingegnere del Suono'),
 (105, 'Max', 'Martin', '1971-02-26', 'Produttore Esecutivo'),
-(106, 'Max', 'Martin', '1971-02-26', 'Produttore Esecutivo');
+(106, 'Max', 'Martin', '1971-02-26', 'Produttore Esecutivo'),
+(110, 'Nigel', 'Godrich', '1971-02-28', 'Produttore'),
+(111, 'Nigel', 'Godrich', '1971-02-28', 'Produttore'),
+(112, 'Jimmy', 'Page', '1944-01-09', 'Produttore'),
+(119, 'Brian', 'Eno', '1948-05-15', 'Co-Produttore'),
+(117, 'Mark', 'Ellis', '1960-08-16', 'Produttore'),
+(118, 'Mark', 'Ellis', '1960-08-16', 'Produttore');
 
 
--- IPOTESI DI QUERY PROVVISORIE
 
--- Query 3: Mostra i dettagli dei tecnici che hanno lavorato a canzoni di genere 'Rock'
--- Ci sta, magari gli ordiniamo in ordine decrescente per il numero di canzoni che hanno prodotto (?)
+
+-- Query 1: Mostra i dettagli dei tecnici che hanno lavorato a canzoni di genere 'Rock'
 SELECT T.Nome, T.Cognome, T.Nazionalita, COUNT(P.Id_Canzone) AS Canzoni_Prodotte
 FROM Tecnico T
 JOIN Produzione P ON T.Nome = P.Nome_Tecnico 
                  AND T.Cognome = P.Cognome_Tecnico 
                  AND T.Data_Nascita = P.Data_Nascita_Tecnico
 JOIN Canzone C ON P.Id_Canzone = C.Id
-WHERE C.GENERE = 'Rock'
+WHERE C.Genere = 'Rock'
 GROUP BY T.Nome, T.Cognome, T.Nazionalita
 ORDER BY Canzoni_Prodotte DESC;
 
--- Query 4: Visualizza i brani musicali contenuti nell'album 'Random Access' con il loro numero di traccia
-SELECT R.Numero_traccia, C.Titolo, A.Nome AS Nome_Album
-FROM Rilascio R
-JOIN Canzone C ON R.Id_Canzone = C.Id
-JOIN Album A ON R.Id_Album = A.Id
-WHERE A.Nome = 'Random Access'
-ORDER BY R.Numero_traccia;
-
--- Query 6: Numero di campioni caricati nel sistema per ogni utente (mostrando il nickname)
-SELECT U.Nickname, COUNT(C.Data_Creazione) AS Totale_Campioni
-FROM Utente U
-LEFT JOIN Campione C ON U.Email = C.Utente
-GROUP BY U.Nickname;
-
--- Query 7: Conteggio delle canzoni prodotte da ciascun tecnico
-SELECT P.Nome_Tecnico, P.Cognome_Tecnico, COUNT(P.Id_Canzone) AS Canzoni_Prodotte
-FROM Produzione P
-GROUP BY P.Nome_Tecnico, P.Cognome_Tecnico;
-
--- Query 8: Trova gli artisti che hanno pubblicato più di un brano nel database
-SELECT CR.Nome_Artista, COUNT(CR.Id_Canzone) AS Numero_Brani
-FROM Creazione CR
-GROUP BY CR.Nome_Artista
-HAVING COUNT(CR.Id_Canzone) > 1;
-
--- Query 9: Generi musicali che hanno una quantità di canzoni strettamente superiore a 1, ordinati per importanza
-
-SELECT GENERE, COUNT(*) AS Quantita
-FROM Canzone
-GROUP BY GENERE
-HAVING COUNT(*) > 1;
-
--- Query 10: Seleziona le canzoni che hanno ricevuto una somma di pitch totale dei campioni superiore o uguale a 1
--- Ci sta
+-- Query 2: Seleziona le canzoni che hanno ricevuto una somma di pitch totale dei campioni superiore o uguale a 1
 SELECT C.Titolo, SUM(CA.pitch) AS Somma_Pitch
 FROM Canzone C
 JOIN Campione CA ON C.Id = CA.Canzone_Id
 GROUP BY C.Titolo
 HAVING SUM(CA.pitch) >= 1;
 
--- Query 11: Trova tutti i membri di una specifica Band (es. 'Daft Punk')
-SELECT S.Nome, S.Cognome, B.NomeBand
-FROM Singolo S
-JOIN Compone CO ON S.Nome = CO.Nome_Singolo 
-               AND S.Cognome = CO.Cognome_Singolo 
-               AND S.Data_Nascita = CO.Data_Nascita_Singolo
-JOIN Band B ON CO.Id_Band = B.Id
-WHERE B.NomeBand = 'Daft Punk';
-
--- Proposte extra:
--- * i due artisti che hanno collaborato di più assieme (sarà una query molto lunga)
+-- Query 3: i due artisti che hanno collaborato di più assieme (sarà una query molto lunga)
 CREATE VIEW Vista_Collaborazioni AS
 SELECT 
     C1.Nome_Artista AS Artista_1, 
@@ -297,7 +369,7 @@ SELECT Artista_1, Artista_2, Numero_Collaborazioni
 FROM Vista_Collaborazioni
 WHERE Numero_Collaborazioni = (SELECT MAX(Numero_Collaborazioni) FROM Vista_Collaborazioni);
 
--- * lista di campioni velocizzati (ovvero con canzone.bpm < campione.bpm)
+-- Query 4 lista di campioni velocizzati (ovvero con canzone.bpm < campione.bpm)
 SELECT 
     Ca.Data_Creazione, 
     Ca.Utente, 
@@ -308,30 +380,19 @@ FROM Campione Ca
 JOIN Canzone C ON Ca.Canzone_Id = C.Id
 WHERE Ca.bpm > C.bpm;
 
--- * lista di canzoni che usano il maggior numero in assoluto di campioni
+-- Query 5 lista di canzoni che usano il maggior numero in assoluto di campioni
 CREATE VIEW Vista_Conteggio_Campioni AS
 SELECT 
     C.Id AS Canzone_Id, 
     C.Titolo, 
-    C.GENERE, 
+    C.Genere, 
     COUNT(Ca.Canzone_Id) AS Totale_Campioni
 FROM Canzone C
 JOIN Campione Ca ON C.Id = Ca.Canzone_Id
-GROUP BY C.Id, C.Titolo, C.GENERE;
+GROUP BY C.Id, C.Titolo, C.Genere;
 
-SELECT Canzone_Id, Titolo, GENERE, Totale_Campioni
+SELECT Canzone_Id, Titolo, Genere, Totale_Campioni
 FROM Vista_Conteggio_Campioni
 WHERE Totale_Campioni = (SELECT MAX(Totale_Campioni) FROM Vista_Conteggio_Campioni);
 
--- lista di canzoni di musica elettronica che usano campioni di tutti i generi eccetto musica elettronica
-SELECT Id, Titolo, GENERE
-FROM Canzone
-WHERE GENERE = 'Electronic'
-  AND Id IN (SELECT Canzone_Id FROM Campione)
-  
-  AND Id NOT IN (
-      SELECT Ca.Canzone_Id
-      FROM Campione Ca
-      JOIN Canzone C_Sorgente ON Ca.Canzone_Id = C_Sorgente.Id
-      WHERE C_Sorgente.GENERE = 'Electronic'
-  );
+
