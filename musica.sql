@@ -354,7 +354,7 @@ JOIN Campione CA ON C.Id = CA.Canzone_Id
 GROUP BY C.Titolo
 HAVING SUM(CA.pitch) >= 1;
 
--- Query 3: i due artisti che hanno collaborato di più assieme (sarà una query molto lunga)
+-- Query 3: i due artisti che hanno collaborato di più assieme 
 CREATE VIEW Vista_Collaborazioni AS
 SELECT 
     C1.Nome_Artista AS Artista_1, 
