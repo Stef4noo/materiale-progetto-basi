@@ -3,7 +3,7 @@
 #include <string.h>
 #include <libpq-fe.h>
 
-// Definisci i parametri di connessione qui
+// Definire i parametri di connessione qui
 #define PG_HOST "localhost"
 #define PG_USER "postgres"
 #define PG_DB "Musica"
@@ -19,7 +19,7 @@ void checkResults(PGresult *res, const PGconn *conn) {
 }
 
 int selezione(){
-    printf("1. Dettagli dei tecnici che hanno lavorato a canzoni di genere 'Rock'\n");
+    printf("1. Dettagli dei tecnici che hanno lavorato a canzoni di un certo genere\n");
     printf("2. Canzoni che hanno ricevuto una somma di pitch totale dei campioni superiore o uguale a 1\n");
     printf("3. I due artisti che hanno collaborato di più assieme\n");
     printf("4. Lista di campioni velocizzati (ovvero con canzone.bpm < campione.bpm)\n");
@@ -39,6 +39,39 @@ void stampaLinea(int campi) {
         printf("+\n");
 }
 
+void eseguiStampaQueryParametrica(PGconn *conn, const char *stmtName, const char *query, const char *valoreParametro) {
+    PGresult *res = PQprepare(conn, stmtName, query, 1, NULL);
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        printf("Errore in fase di preparazione: %s\n", PQerrorMessage(conn));
+        PQclear(res);
+        return;
+    }
+    PQclear(res);
+
+    const char *params[1] = {valoreParametro};
+    res = PQexecPrepared(conn, stmtName, 1, params, NULL, NULL, 0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        printf("Errore nell'esecuzione: %s\n", PQerrorMessage(conn));
+        PQclear(res);
+        return;
+    }
+
+    int tuple = PQntuples(res);
+    int campi = PQnfields(res);
+    stampaLinea(campi);
+    printf("|");
+    for (int i = 0; i < campi; i++) printf(" %-24s|", PQfname(res, i));
+    printf("\n");
+    stampaLinea(campi);
+    for (int i = 0; i < tuple; i++) {
+        printf("|");
+        for (int j = 0; j < campi; j++) printf(" %-24s|", PQgetvalue(res, i, j));
+        printf("\n");
+    }
+    stampaLinea(campi);
+    PQclear(res);
+}
 
 void eseguiStampaQuery(PGconn *conn, const char *query) {
     PGresult *res = PQexec(conn, query);
@@ -94,14 +127,13 @@ int main() {
         return 1;
     }
 
-    // Vorrei rendere la query 1 parametrica
     const char *query1 ="SELECT T.Nome, T.Cognome, T.Nazionalita, COUNT(P.Id_Canzone) AS Canzoni_Prodotte "
                         "FROM Tecnico T "
                         "JOIN Produzione P ON T.Nome = P.Nome_Tecnico "
                         "AND T.Cognome = P.Cognome_Tecnico "
                         "AND T.Data_Nascita = P.Data_Nascita_Tecnico "
                         "JOIN Canzone C ON P.Id_Canzone = C.Id "
-                        "WHERE C.Genere = 'Rock' "
+                        "WHERE C.Genere = $1 "
                         "GROUP BY T.Nome, T.Cognome, T.Nazionalita "
                         "ORDER BY Canzoni_Prodotte DESC;";
 
@@ -151,7 +183,12 @@ int main() {
                          "FROM Vista_Conteggio_Campioni "
                          "WHERE Totale_Campioni = (SELECT MAX(Totale_Campioni) FROM Vista_Conteggio_Campioni); ";
 
-    if(selezionato == 1) eseguiStampaQuery(conn, query1);
+    if(selezionato == 1){
+        char genere[50];
+        printf("Inserisci il genere (es. Rock): ");
+        scanf("%s", genere);
+        eseguiStampaQueryParametrica(conn, "query1_stmt", query1, genere);
+    } 
     else if(selezionato == 2) eseguiStampaQuery(conn, query2);
     else if(selezionato == 3) eseguiStampaQuery(conn, query3);
     else if(selezionato == 4) eseguiStampaQuery(conn, query4);
