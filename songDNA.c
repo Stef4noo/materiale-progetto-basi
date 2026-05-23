@@ -94,6 +94,7 @@ int main() {
         return 1;
     }
 
+    // Vorrei rendere la query 1 parametrica
     const char *query1 ="SELECT T.Nome, T.Cognome, T.Nazionalita, COUNT(P.Id_Canzone) AS Canzoni_Prodotte "
                         "FROM Tecnico T "
                         "JOIN Produzione P ON T.Nome = P.Nome_Tecnico "
@@ -110,7 +111,6 @@ int main() {
                          "GROUP BY C.Titolo "
                          "HAVING SUM(CA.pitch) >= 1; ";
 
-    // Vorrei rendere la query 3 parametrica
     const char *query3 = "DROP VIEW IF EXISTS Vista_Collaborazioni; "
                          "CREATE VIEW Vista_Collaborazioni AS "
                          "SELECT "
