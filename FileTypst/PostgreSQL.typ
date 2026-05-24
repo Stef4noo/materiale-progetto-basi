@@ -1,3 +1,4 @@
+#show figure: set figure(supplement: none)
 = Implementazione in PostgreSQL e Definizione delle Query
 == Definizione delle Query
 Di seguito vengono presentate e descritte le query con i relativi output generati e viene motivato l’utilizzo dell’indice proposto.
@@ -15,9 +16,9 @@ GROUP BY T.Nome, T.Cognome, T.Nazionalita
 ORDER BY Canzoni_Prodotte DESC;
 ```
 #figure(
-  image("temp.png", width: 80%),
+  image("query1.png", width: 80%),
   caption: [
-    Esecuzione query 1 (adesso  sono col portatile non ho pgadmin)
+    Esecuzione query 1 
   ],
 )
 
@@ -30,7 +31,7 @@ GROUP BY C.Titolo
 HAVING SUM(CA.pitch) >= 1;
 ```
 #figure(
-  image("temp.png", width: 80%),
+  image("query2.png", width: 80%),
   caption: [
     Esecuzione query 2
   ],
@@ -54,7 +55,7 @@ WHERE Numero_Collaborazioni = (SELECT MAX(Numero_Collaborazioni) FROM Vista_Coll
 ```
 
 #figure(
-  image("temp.png", width: 80%),
+  image("query3.png", width: 80%),
   caption: [
     Esecuzione query 3
   ],
@@ -73,7 +74,7 @@ JOIN Canzone C ON Ca.Canzone_Id = C.Id
 WHERE Ca.bpm > C.bpm;
 ```
 #figure(
-  image("temp.png", width: 80%),
+  image("query4.png", width: 80%),
   caption: [
     Esecuzione query 4
   ],
@@ -96,7 +97,7 @@ FROM Vista_Conteggio_Campioni
 WHERE Totale_Campioni = (SELECT MAX(Totale_Campioni) FROM Vista_Conteggio_Campioni);
 ```
 #figure(
-  image("temp.png", width: 80%),
+  image("query5.png", width: 80%),
   caption: [
     Esecuzione query 5
   ],
