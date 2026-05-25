@@ -102,3 +102,15 @@ WHERE Totale_Campioni = (SELECT MAX(Totale_Campioni) FROM Vista_Conteggio_Campio
     Esecuzione query 5
   ],
 )
+
+== Creazione degli indici
+Si è scelto di ottimizzare la Query 1, la quale seleziona i dettagli dei tecnici che hanno lavorato a canzoni di genere 'Rock'. La struttura logica dell'interrogazione prevede l'esecuzione di una `JOIN` tra le tabelle `Tecnico`, `Produzione` e `Canzone`, seguita da un filtraggio basata su un operatore di ugualianza (`C.Genere = 'Rock'`) e un'operazione finale di aggregazione e ordinamento (`GROUP BY T.Nome, T.Cognome, T.Nazionalita`) (`ORDER BY Canzoni_Prodotte DESC`).
+
+Per ottimizzare questa query si è deciso di intervenire su:
+1. Filtraggio sul Genere della Canzone: La clausola `WHERE C.Genere = 'Rock'` richiede una ricerca basata su un'uguaglianza, quindi l'implementazione di un indice basato su hasing risulta particolarmente efficace.
+2. Analisi sull'esclusione di altri indici: si è ritenuto superfluo creare ulteriori indici per ottimizzare la clausola `GROUP BY T.Nome, T.Cognome, T.Nazionalita`. I campi in questione costituiscono infatti la chiave primaria della tabella `Tecnico`. Poiché PostgreSQL crea in automatico un indice B+ Tree per ogni chiave primaria, esiste già un indice in cui le tuple sono mantenute in ordine
+
+In conclusione l'indice è riportato a seguire:
+```sql
+CREATE INDEX idx_canzone_genere ON Canzone USING HASH (Genere);
+```

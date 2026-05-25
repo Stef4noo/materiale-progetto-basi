@@ -395,4 +395,5 @@ SELECT Canzone_Id, Titolo, Genere, Totale_Campioni
 FROM Vista_Conteggio_Campioni
 WHERE Totale_Campioni = (SELECT MAX(Totale_Campioni) FROM Vista_Conteggio_Campioni);
 
-
+-- Creazione dell'indice basato su hash per ottimizzare la clausola WHERE di query 1
+CREATE INDEX idx_canzone_genere ON Canzone USING hash (Genere);
