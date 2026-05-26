@@ -1,3 +1,7 @@
+-- query 3 migliorata che non conta le collaborazioni tra 2 artisti singoli della stessa band 
+-- un artista può essere esclusivamente singolo o band, bisogna quindi contare le seguenti possibili collaborazioni:
+-- (band, band), (band, singolo), (singolo, singolo)
+
 CREATE VIEW collab_singolo_singolo AS
 SELECT
     cs1.nome_artista AS artista_1,
