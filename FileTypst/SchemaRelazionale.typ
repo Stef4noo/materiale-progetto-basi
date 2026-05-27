@@ -27,8 +27,6 @@ Lo schema ristrutturato contiene solamente costrutti mappabili in corrispettivi 
   - Produzione.Id_Canzone -> Canzone.Id
   - (Produzione.Nome_Tecnico, Produzione.Cognome_Tecnico, Produzione.Data_Nascita_Tecnico) -> Tecnico.(Nome, Cognome, Data_Nascita) 
 - *Tecnico*(#underline[Nome, Cognome, Data_Nascita*], Nazionalità)
-- *Artista*(#underline[Nome_DArte], Nome_CasaDiscografica)
-  - Artista.Nome_CasaDiscografica -> CasaDiscografica.Nome
 - *CasaDiscografica*(#underline[Nome], Sede_legale)
 - *Singolo*(#underline[Nome_DArte], Nome, Cognome, Data_Nascita, Nazionalità, Contratto)
   - Singolo.Contratto -> CasaDiscografica.Nome
