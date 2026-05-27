@@ -560,7 +560,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="GjvrHT7Z494AQOcq067d-9" parent="1" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;labelBackgroundColor=none;fontSize=14;" value="&lt;div&gt;creazione&lt;/div&gt;band" vertex="1">
-          <mxGeometry height="45" width="130" x="250" y="230" as="geometry" />
+          <mxGeometry height="55" width="130" x="250" y="220" as="geometry" />
         </mxCell>
         <mxCell id="GjvrHT7Z494AQOcq067d-11" edge="1" parent="1" source="Euu9QNl5F3-hDXp_3r0u-65" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.137;entryY=-0.053;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;fontSize=14;" target="EKaHRfkjIBELlOM4YF2x-2">
           <mxGeometry relative="1" as="geometry">
