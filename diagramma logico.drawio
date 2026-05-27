@@ -443,7 +443,7 @@
           <mxGeometry height="30" width="60" x="95" y="870" as="geometry" />
         </mxCell>
         <mxCell id="Kx5HZ5dptIjv3k3y7CfK-87" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=14;" value="ruolo" vertex="1">
-          <mxGeometry height="30" width="60" x="-152.5" y="267.5" as="geometry" />
+          <mxGeometry height="30" width="60" x="-130" y="262.5" as="geometry" />
         </mxCell>
         <mxCell id="Kx5HZ5dptIjv3k3y7CfK-89" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;endArrow=none;endFill=0;fontSize=14;">
           <mxGeometry relative="1" as="geometry">
