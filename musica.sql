@@ -37,12 +37,6 @@ CREATE TABLE Album (
     FOREIGN KEY (Nome_CasaDiscografica) REFERENCES CasaDiscografica(Nome)
 );
 
-CREATE TABLE Artista (
-    Nome_DArte VARCHAR(20) PRIMARY KEY,
-    Nome_CasaDiscografica VARCHAR(20) NOT NULL,
-    FOREIGN KEY (Nome_CasaDiscografica) REFERENCES CasaDiscografica(Nome)
-);
-
 CREATE TABLE Campione (
     Data_Creazione DATE,
     Utente VARCHAR(30),
@@ -83,25 +77,35 @@ CREATE TABLE Singolo (
     Cognome VARCHAR(20) NOT NULL,
     Data_Nascita DATE NOT NULL,
     Nazionalita VARCHAR(20) NOT NULL,
-    NomeArte VARCHAR(20),
-    PRIMARY KEY (NomeArte),
-    FOREIGN KEY (NomeArte) REFERENCES Artista(Nome_DArte)
+    Nome_DArte VARCHAR(20),
+    Contratto VARCHAR(20) NOT NULL,
+    PRIMARY KEY (Nome_DArte),
+    FOREIGN KEY (Contratto) REFERENCES CasaDiscografica(Nome)
 );
 
 CREATE TABLE Band (
     Data_Fondazione DATE NOT NULL,
-    NomeBand VARCHAR(20), 
-    PRIMARY KEY (NomeBand),
-    FOREIGN KEY (NomeBand) REFERENCES Artista(Nome_DArte)
+    Nome_DArte VARCHAR(20), 
+    Contratto VARCHAR(20),
+    PRIMARY KEY (Nome_DArte),
+    FOREIGN KEY (Contratto) REFERENCES CasaDiscografica(Nome)
 );
 
-CREATE TABLE Creazione (
+CREATE TABLE CreazioneSingolo (
     Id_Canzone INT,
-    Nome_Artista VARCHAR(20),
+    NomeSingolo VARCHAR(20),
     Ruolo VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Id_Canzone, Nome_Artista),
+    PRIMARY KEY (Id_Canzone, NomeSingolo),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
-    FOREIGN KEY (Nome_Artista) REFERENCES Artista(Nome_DArte)
+    FOREIGN KEY (NomeSingolo) REFERENCES Singolo(Nome_DArte)
+);
+
+CREATE TABLE CreazioneBand (
+    Id_Canzone INT,
+    NomeBand VARCHAR(20),
+    PRIMARY KEY (Id_Canzone, NomeBand),
+    FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
+    FOREIGN KEY (NomeBand) REFERENCES Band(Nome_DArte)
 );
 
 CREATE TABLE Rilascio (
@@ -117,8 +121,8 @@ CREATE TABLE Membro (
     Nome_Singolo VARCHAR(20),
     Nome_Band VARCHAR (20),
     PRIMARY KEY (Nome_Singolo, Nome_Band),
-    FOREIGN KEY (Nome_Singolo) REFERENCES Singolo(NomeArte),
-    FOREIGN KEY (Nome_Band) REFERENCES Band(NomeBand)
+    FOREIGN KEY (Nome_Singolo) REFERENCES Singolo(Nome_DArte),
+    FOREIGN KEY (Nome_Band) REFERENCES Band(Nome_DArte)
 );
 
 -- 1. UTENTI
@@ -191,57 +195,34 @@ INSERT INTO Tecnico (Nome, Cognome, Data_Nascita, Nazionalita) VALUES
 ('Brian', 'Eno', '1948-05-15', 'Britannica'),
 ('Mark', 'Ellis', '1960-08-16', 'Britannica');
 
--- 6. ARTISTI
-INSERT INTO Artista (Nome_DArte, Nome_CasaDiscografica) VALUES
-('Daft Punk', 'Sony Music'),
-('Pink Floyd', 'EMI Records'),
-('The Weeknd', 'Universal Music'),
-('Kavinsky', 'Universal Music'),
-('Thomas Bangalter', 'Sony Music'),
-('Guy-Manuel', 'Sony Music'),
-('David Gilmour', 'EMI Records'),
-('Roger Waters', 'EMI Records'),
-('Radiohead', 'Parlophone'),
-('Led Zeppelin', 'Warner Bros'),
-('Massive Attack', 'Virgin Records'),
-('Thom Yorke', 'Parlophone'),
-('Jonny Greenwood', 'Parlophone'),
-('Robert Plant', 'Warner Bros'),
-('Kraftwerk', 'Kling Klang'),
-('David Bowie', 'RCA Records'),
-('Nine Inch Nails', 'Nothing Records'),
-('Trent Reznor', 'Nothing Records'),
-('Atticus Ross', 'Nothing Records'),
-('Ralf Hutter', 'Kling Klang'),
-('Florian Schneider', 'Kling Klang');
+-- 6. SINGOLI
+INSERT INTO Singolo (Nome, Cognome, Data_Nascita, Nazionalita, Nome_DArte, Contratto) VALUES
+('Abel', 'Tesfaye', '1990-02-16', 'Canadese', 'The Weeknd', 'Universal Music'),
+('Vincent', 'Belorgey', '1975-07-31', 'Francese', 'Kavinsky', 'Universal Music'),
+('Thomas', 'Bangalter', '1975-01-03', 'Francese', 'Thomas Bangalter', 'Sony Music'),
+('Guy-Manuel', 'de Homem-Christo', '1974-02-08', 'Francese', 'Guy-Manuel', 'Sony Music'),
+('David', 'Gilmoure', '1946-03-06', 'Britannica', 'David Gilmour', 'EMI Records'),
+('Roger', 'Waters', '1943-09-06', 'Britannica', 'Roger Waters', 'EMI Records'),
+('Thomas', 'Yorke', '1968-10-07', 'Britannica', 'Thom Yorke', 'Parlophone'),
+('Jonathan', 'Greenwood', '1971-11-05', 'Britannica', 'Jonny Greenwood', 'Parlophone'),
+('Robert', 'Plant', '1948-08-20', 'Britannica', 'Robert Plant', 'Warner Bros'),
+('David', 'Jones', '1947-01-08', 'Britannica', 'David Bowie', 'RCA Records'),
+('Trent', 'Reznor', '1965-05-17', 'Statunitense', 'Trent Reznor', 'Nothing Records'),
+('Atticus', 'Ross', '1968-01-16', 'Britannica', 'Atticus Ross', 'Nothing Records'),
+('Ralf', 'Hutter', '1946-08-20', 'Tedesca', 'Ralf Hutter', 'Kling Klang'),
+('Florian', 'Schneider', '1947-04-07', 'Tedesca', 'Florian Schneider', 'Kling Klang');
 
--- 7. SINGOLI
-INSERT INTO Singolo (Nome, Cognome, Data_Nascita, Nazionalita, NomeArte) VALUES
-('Abel', 'Tesfaye', '1990-02-16', 'Canadese', 'The Weeknd'),
-('Vincent', 'Belorgey', '1975-07-31', 'Francese', 'Kavinsky'),
-('Thomas', 'Bangalter', '1975-01-03', 'Francese', 'Thomas Bangalter'),
-('Guy-Manuel', 'de Homem-Christo', '1974-02-08', 'Francese', 'Guy-Manuel'),
-('David', 'Gilmoure', '1946-03-06', 'Britannica', 'David Gilmour'),
-('Roger', 'Waters', '1943-09-06', 'Britannica', 'Roger Waters'),
-('Thomas', 'Yorke', '1968-10-07', 'Britannica', 'Thom Yorke'),
-('Jonathan', 'Greenwood', '1971-11-05', 'Britannica', 'Jonny Greenwood'),
-('Robert', 'Plant', '1948-08-20', 'Britannica', 'Robert Plant'),
-('David', 'Jones', '1947-01-08', 'Britannica', 'David Bowie'),
-('Trent', 'Reznor', '1965-05-17', 'Statunitense', 'Trent Reznor'),
-('Atticus', 'Ross', '1968-01-16', 'Britannica', 'Atticus Ross'),
-('Ralf', 'Hutter', '1946-08-20', 'Tedesca', 'Ralf Hutter'),
-('Florian', 'Schneider', '1947-04-07', 'Tedesca', 'Florian Schneider');
+-- 7. BAND
+INSERT INTO Band (Data_Fondazione, Nome_Darte, Contratto) VALUES
+('1993-01-01', 'Daft Punk', 'Sony Music'),
+('1965-01-01', 'Pink Floyd', 'EMI Records'),
+('1985-01-01', 'Radiohead', 'Parlophone'),
+('1968-01-01', 'Led Zeppelin', 'Warner Bros'),
+('1970-01-01', 'Kraftwerk', 'Kling Klang'),
+('1988-01-01', 'Nine Inch Nails', 'Nothing Records'),
+('1988-01-01', 'Massive Attack', 'Virgin Records');
 
--- 8. BAND
-INSERT INTO Band (Data_Fondazione, NomeBand) VALUES
-('1993-01-01', 'Daft Punk'),
-('1965-01-01', 'Pink Floyd'),
-('1985-01-01', 'Radiohead'),
-('1968-01-01', 'Led Zeppelin'),
-('1970-01-01', 'Kraftwerk'),
-('1988-01-01', 'Nine Inch Nails');
-
--- 9. MEMBRO
+-- 8. MEMBRO
 INSERT INTO Membro (Nome_Singolo, Nome_Band) VALUES
 ('Thomas Bangalter', 'Daft Punk'),
 ('Guy-Manuel', 'Daft Punk'),
@@ -255,7 +236,7 @@ INSERT INTO Membro (Nome_Singolo, Nome_Band) VALUES
 ('Ralf Hutter', 'Kraftwerk'),
 ('Florian Schneider', 'Kraftwerk');
 
--- 10. CAMPIONI
+-- 9. CAMPIONI
 INSERT INTO Campione (Data_Creazione, Utente, Canzone_Id, Descrizione, pitch, bpm, has_ehco, Is_invertita, url) VALUES
 ('2026-01-10', 'leo@email.com', 101, 'Chitarra funky intro', 0, 124, FALSE, FALSE, '/samples/101_funk.wav'),
 ('2026-01-12', 'leo@email.com', 101, 'Vocoder loop ritornello', 2, 116, TRUE, FALSE, '/samples/101_voc.wav'),
@@ -280,24 +261,18 @@ INSERT INTO Campione (Data_Creazione, Utente, Canzone_Id, Descrizione, pitch, bp
 ('2026-06-11', 'alice@email.com', 119, 'Fripp guitar wail', 3, 112, TRUE, FALSE, '/samples/119_fripp.wav');
 
 
--- 11. NUOVA CANZONE 
+-- 10. NUOVA CANZONE 
 INSERT INTO NuovaCanzone (Id_Canzone, Campione_Data, Campione_Utente) VALUES
 (122, '2026-01-10', 'leo@email.com'),
 (122, '2026-01-12', 'leo@email.com'),
 (123, '2026-03-01', 'marco@email.com');
 
--- 12. CREAZIONE
-INSERT INTO Creazione (Id_Canzone, Nome_Artista, Ruolo) VALUES
-(101, 'Daft Punk', 'Compositore'),
-(102, 'Daft Punk', 'Compositore'),
-(103, 'Pink Floyd', 'Autore'),
-(104, 'Pink Floyd', 'Autore'),
+-- 11. CREAZIONE SINGOLO (Solo entità Singolo con rispettivo Ruolo)
+INSERT INTO CreazioneSingolo (Id_Canzone, NomeSingolo, Ruolo) VALUES
 (105, 'The Weeknd', 'Cantante'),
 (106, 'The Weeknd', 'Cantante'),
 (107, 'The Weeknd', 'Cantante'),
-(107, 'Daft Punk', 'Produttore'), 
 (108, 'The Weeknd', 'Cantante'),
-(108, 'Daft Punk', 'Produttore'), 
 (109, 'The Weeknd', 'Cantante'),
 (109, 'Kavinsky', 'Compositore'),
 (110, 'Thom Yorke', 'Cantante'),
@@ -306,8 +281,6 @@ INSERT INTO Creazione (Id_Canzone, Nome_Artista, Ruolo) VALUES
 (111, 'Jonny Greenwood', 'Chitarrista'),
 (114, 'Thom Yorke', 'Cantante'),
 (114, 'Jonny Greenwood', 'Chitarrista'),
-(112, 'Led Zeppelin', 'Compositore'),
-(113, 'Massive Attack', 'Autore'),
 (117, 'Trent Reznor', 'Compositore'),
 (117, 'Atticus Ross', 'Tastierista'),
 (118, 'Trent Reznor', 'Compositore'),
@@ -316,11 +289,22 @@ INSERT INTO Creazione (Id_Canzone, Nome_Artista, Ruolo) VALUES
 (120, 'Atticus Ross', 'Sintetizzatore'),
 (121, 'Trent Reznor', 'Compositore'),
 (121, 'Atticus Ross', 'Produttore'),
-(115, 'Kraftwerk', 'Compositore'),
-(116, 'Kraftwerk', 'Autore'),
 (119, 'David Bowie', 'Cantante'),
-(122, 'Daft Punk', 'Remixer'),
 (123, 'The Weeknd', 'Cantante');
+
+-- 12. CREAZIONE BAND (Solo entità Band, colonna Ruolo rimossa)
+INSERT INTO CreazioneBand (Id_Canzone, NomeBand) VALUES
+(101, 'Daft Punk'),
+(102, 'Daft Punk'),
+(103, 'Pink Floyd'),
+(104, 'Pink Floyd'),
+(107, 'Daft Punk'), 
+(108, 'Daft Punk'), 
+(112, 'Led Zeppelin'),
+(113, 'Massive Attack'),
+(115, 'Kraftwerk'),
+(116, 'Kraftwerk'),
+(122, 'Daft Punk');
 
 -- 13. RILASCIO
 INSERT INTO Rilascio (Id_Canzone, Id_Album, Numero_traccia) VALUES
@@ -380,12 +364,49 @@ HAVING SUM(CA.pitch) >= 1;
 -- Query 3: i due artisti che hanno collaborato di più assieme 
 CREATE VIEW Vista_Collaborazioni AS
 SELECT 
+    C1.NomeSingolo AS Artista_1, 
+    C2.NomeSingolo AS Artista_2, 
+    COUNT(*) AS Numero_Collaborazioni
+FROM CreazioneSingolo C1
+JOIN CreazioneSingolo C2 ON C1.Id_Canzone = C2.Id_Canzone 
+                 AND C1.NomeSingolo < C2.NomeSingolo
+GROUP BY C1.NomeSingolo, C2.NomeSingolo;
+
+SELECT Artista_1, Artista_2, Numero_Collaborazioni
+FROM Vista_Collaborazioni
+WHERE Numero_Collaborazioni = (SELECT MAX(Numero_Collaborazioni) FROM Vista_Collaborazioni);
+
+-- Query 3plus: i due artisti che hanno collaborato di più assieme che non facciano parte della stessa band
+CREATE VIEW Vista_Tutti_Autori AS
+SELECT Id_Canzone, NomeSingolo AS Nome_Artista FROM CreazioneSingolo
+UNION ALL
+SELECT Id_Canzone, NomeBand AS Nome_Artista FROM CreazioneBand;
+
+CREATE VIEW Vista_Collaborazioni AS
+SELECT 
     C1.Nome_Artista AS Artista_1, 
     C2.Nome_Artista AS Artista_2, 
     COUNT(*) AS Numero_Collaborazioni
-FROM Creazione C1
-JOIN Creazione C2 ON C1.Id_Canzone = C2.Id_Canzone 
+FROM Vista_Tutti_Autori C1
+JOIN Vista_Tutti_Autori C2 ON C1.Id_Canzone = C2.Id_Canzone 
                  AND C1.Nome_Artista < C2.Nome_Artista 
+WHERE 
+    NOT EXISTS (
+        SELECT * FROM Membro M1 
+        JOIN Membro M2 ON M1.Nome_Band = M2.Nome_Band
+        WHERE M1.Nome_Singolo = C1.Nome_Artista 
+          AND M2.Nome_Singolo = C2.Nome_Artista
+    )
+    AND NOT EXISTS (
+        SELECT * FROM Membro 
+        WHERE Nome_Singolo = C1.Nome_Artista 
+          AND Nome_Band = C2.Nome_Artista
+    )
+    AND NOT EXISTS (
+        SELECT * FROM Membro 
+        WHERE Nome_Singolo = C2.Nome_Artista 
+          AND Nome_Band = C1.Nome_Artista
+    )
 GROUP BY C1.Nome_Artista, C2.Nome_Artista;
 
 SELECT Artista_1, Artista_2, Numero_Collaborazioni
