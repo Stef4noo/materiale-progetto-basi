@@ -14,7 +14,10 @@ CREATE TABLE Canzone (
     Titolo VARCHAR(20) NOT NULL,
     Genere VARCHAR(20) NOT NULL,
     url VARCHAR(50) NOT NULL,
-    bpm INT NOT NULL
+    bpm INT NOT NULL,
+    Tipo VARCHAR(15) NOT NULL,
+    Originale INT,
+    FOREIGN KEY (Originale) References Canzone(Id)
 );
 
 CREATE TABLE Tecnico (
@@ -53,6 +56,15 @@ CREATE TABLE Campione (
     PRIMARY KEY (Data_Creazione, Utente),
     FOREIGN KEY(Utente) REFERENCES Utente(Email),
     FOREIGN KEY(Canzone_Id) REFERENCES Canzone(Id)
+);
+
+CREATE TABLE NuovaCanzone (
+    Id_Canzone INT,
+    Campione_Data DATE,
+    Campione_Utente VARCHAR(20),
+    PRIMARY KEY (Id_Canzone, Campione_Data, Campione_Utente),
+    FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
+    FOREIGN KEY (Campione_Data, Campione_Utente) REFERENCES Campione(Data_Creazione, Utente)
 );
 
 CREATE TABLE Produzione (
@@ -144,28 +156,30 @@ INSERT INTO Album (Id, Nome, Data_rilascio, Numero_tracce, Nome_CasaDiscografica
 (9, 'The Downward Spiral', '1994-03-08', 14, 'Nothing Records');
 
 -- 4. CANZONI
-INSERT INTO Canzone (Id, Data_rilascio, Titolo, Genere, url, bpm) VALUES
-(101, '2013-04-19', 'Get Lucky', 'Electronic', '/audio/get-lucky.mp3', 116),
-(102, '2013-05-17', 'Instant Crush', 'Electronic', '/audio/instant-crush.mp3', 110),
-(103, '1973-03-01', 'Time', 'Rock', '/audio/time.mp3', 120),
-(104, '1973-03-01', 'Money', 'Rock', '/audio/money.mp3', 122),
-(105, '2020-01-29', 'Blinding Lights', 'Pop', '/audio/blinding-lights.mp3', 171),
-(106, '2020-03-20', 'Save Your Tears', 'Pop', '/audio/save-your-tears.mp3', 118),
-(107, '2016-09-22', 'Starboy', 'R&B', '/audio/starboy.mp3', 186),
-(108, '2016-11-18', 'I Feel It Coming', 'R&B', '/audio/i-feel-it-coming.mp3', 123),
-(109, '2013-01-01', 'Odd Look', 'Synthwave', '/audio/odd-look.mp3', 115),
-(110, '1997-05-21', 'Paranoid Android', 'Rock', '/audio/paranoid.mp3', 82),
-(111, '1997-05-21', 'Karma Police', 'Rock', '/audio/karma.mp3', 75),
-(112, '1971-11-08', 'Stairway to Heaven', 'Rock', '/audio/stairway.mp3', 82),
-(113, '1998-04-27', 'Teardrop', 'Electronic', '/audio/teardrop.mp3', 77),
-(114, '1997-05-21', 'No Surprises', 'Rock', '/audio/nosurprises.mp3', 76),
-(115, '1977-03-01', 'Trans-Europe Express', 'Electronic', '/audio/tee.mp3', 114),
-(116, '1977-03-01', 'Showroom Dummies', 'Electronic', '/audio/showroom.mp3', 118),
-(117, '1994-03-08', 'Closer', 'Industrial', '/audio/closer.mp3', 90),
-(118, '1994-03-08', 'Hurt', 'Industrial', '/audio/hurt.mp3', 85),
-(119, '1977-09-23', 'Heroes', 'Rock', '/audio/heroes.mp3', 112),
-(120, '1994-02-25', 'March of the Pigs', 'Industrial', '/audio/pigs.mp3', 269),
-(121, '2005-04-18', 'The Hand That Feeds', 'Industrial', '/audio/hand.mp3', 135);
+INSERT INTO Canzone (Id, Data_rilascio, Titolo, Genere, url, bpm, Tipo, Originale) VALUES
+(101, '2013-04-19', 'Get Lucky', 'Electronic', '/audio/get-lucky.mp3', 116, 'Originale', NULL),
+(102, '2013-05-17', 'Instant Crush', 'Electronic', '/audio/instant-crush.mp3', 110, 'Originale', NULL),
+(103, '1973-03-01', 'Time', 'Rock', '/audio/time.mp3', 120, 'Originale', NULL),
+(104, '1973-03-01', 'Money', 'Rock', '/audio/money.mp3', 122, 'Originale', NULL),
+(105, '2020-01-29', 'Blinding Lights', 'Pop', '/audio/blinding-lights.mp3', 171, 'Originale', NULL),
+(106, '2020-03-20', 'Save Your Tears', 'Pop', '/audio/save-your-tears.mp3', 118, 'Originale', NULL),
+(107, '2016-09-22', 'Starboy', 'R&B', '/audio/starboy.mp3', 186, 'Originale', NULL),
+(108, '2016-11-18', 'I Feel It Coming', 'R&B', '/audio/i-feel-it-coming.mp3', 123, 'Originale', NULL),
+(109, '2013-01-01', 'Odd Look', 'Synthwave', '/audio/odd-look.mp3', 115, 'Originale', NULL),
+(110, '1997-05-21', 'Paranoid Android', 'Rock', '/audio/paranoid.mp3', 82, 'Originale', NULL),
+(111, '1997-05-21', 'Karma Police', 'Rock', '/audio/karma.mp3', 75, 'Originale', NULL),
+(112, '1971-11-08', 'Stairway to Heaven', 'Rock', '/audio/stairway.mp3', 82, 'Originale', NULL),
+(113, '1998-04-27', 'Teardrop', 'Electronic', '/audio/teardrop.mp3', 77, 'Originale', NULL),
+(114, '1997-05-21', 'No Surprises', 'Rock', '/audio/nosurprises.mp3', 76, 'Originale', NULL),
+(115, '1977-03-01', 'Trans-Europe Express', 'Electronic', '/audio/tee.mp3', 114, 'Originale', NULL),
+(116, '1977-03-01', 'Showroom Dummies', 'Electronic', '/audio/showroom.mp3', 118, 'Originale', NULL),
+(117, '1994-03-08', 'Closer', 'Industrial', '/audio/closer.mp3', 90, 'Originale', NULL),
+(118, '1994-03-08', 'Hurt', 'Industrial', '/audio/hurt.mp3', 85, 'Originale', NULL),
+(119, '1977-09-23', 'Heroes', 'Rock', '/audio/heroes.mp3', 112, 'Originale', NULL),
+(120, '1994-02-25', 'March of the Pigs', 'Industrial', '/audio/pigs.mp3', 269, 'Originale', NULL),
+(121, '2005-04-18', 'The Hand That Feeds', 'Industrial', '/audio/hand.mp3', 135, 'Originale', NULL),
+(122, '2014-06-01', 'Get Lucky Remix', 'Electronic', '/audio/get-lucky-rmx.mp3', 123, 'Remix', 101),
+(123, '2021-02-10', 'Save Your Tears Rmx', 'Pop', '/audio/save-tears-rmx.mp3', 118, 'Remix', 106);
 
 -- 5. TECNICI
 INSERT INTO Tecnico (Nome, Cognome, Data_Nascita, Nazionalita) VALUES
@@ -265,7 +279,14 @@ INSERT INTO Campione (Data_Creazione, Utente, Canzone_Id, Descrizione, pitch, bp
 ('2026-06-10', 'marco@email.com', 117, 'Industrial drum fill', 2, 100, FALSE, FALSE, '/samples/117_drum.wav'), 
 ('2026-06-11', 'alice@email.com', 119, 'Fripp guitar wail', 3, 112, TRUE, FALSE, '/samples/119_fripp.wav');
 
--- 11. CREAZIONE
+
+-- 11. NUOVA CANZONE 
+INSERT INTO NuovaCanzone (Id_Canzone, Campione_Data, Campione_Utente) VALUES
+(122, '2026-01-10', 'leo@email.com'),
+(122, '2026-01-12', 'leo@email.com'),
+(123, '2026-03-01', 'marco@email.com');
+
+-- 12. CREAZIONE
 INSERT INTO Creazione (Id_Canzone, Nome_Artista, Ruolo) VALUES
 (101, 'Daft Punk', 'Compositore'),
 (102, 'Daft Punk', 'Compositore'),
@@ -297,9 +318,11 @@ INSERT INTO Creazione (Id_Canzone, Nome_Artista, Ruolo) VALUES
 (121, 'Atticus Ross', 'Produttore'),
 (115, 'Kraftwerk', 'Compositore'),
 (116, 'Kraftwerk', 'Autore'),
-(119, 'David Bowie', 'Cantante');
+(119, 'David Bowie', 'Cantante'),
+(122, 'Daft Punk', 'Remixer'),
+(123, 'The Weeknd', 'Cantante');
 
--- 12. RILASCIO
+-- 13. RILASCIO
 INSERT INTO Rilascio (Id_Canzone, Id_Album, Numero_traccia) VALUES
 (101, 1, 5),
 (102, 1, 6),
@@ -320,7 +343,7 @@ INSERT INTO Rilascio (Id_Canzone, Id_Album, Numero_traccia) VALUES
 (120, 9, 4),
 (121, 9, 8);
 
--- 13. PRODUZIONE
+-- 14. PRODUZIONE
 INSERT INTO Produzione (Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico, Ruolo) VALUES
 (101, 'Giorgio', 'Moroder', '1940-04-26', 'Produttore Associato'),
 (103, 'Alan', 'Parsons', '1948-12-20', 'Ingegnere del Suono'),
