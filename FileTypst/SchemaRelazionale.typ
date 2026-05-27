@@ -12,9 +12,12 @@ Lo schema ristrutturato contiene solamente costrutti mappabili in corrispettivi 
   - Campione.Canzone-Id -> Canzone.Id
 - *Canzone*(#underline[Id], Titolo, Genere, Data_Rilascio, url, bpm, Tipo, Originale*)
   - Canzone.Originale -> Canzone.Id
-- *Creazione*(#underline[Id_Canzone, Nome_Artista], Ruolo)
-  - Creazione.Id_Canzone ->  Canzone.Id
-  - Creazione.Nome_Artista -> Artista.Nome_D'Arte
+- *CreazioneSingolo*(#underline[Id_Canzone, Nome_Singolo], Ruolo)
+  - CreazioneSingolo.Id_Canzone ->  Canzone.Id
+  - CreazioneSingolo.Nome_Singolo -> Artista.Nome_DArte
+- *CreazioneBand*(#underline[Id_Canzone, Nome_Band])
+  - CreazioneBand.Id_Canzone ->  Canzone.Id
+  - CreazioneBand.Nome_Band -> Band.Nome_DArte
 - *Rilascio*(#underline[Id_Canzone, Id_Album], Numero_traccia)
   - Rilascio.Id_Canzone -> Canzone.Id
   - Rilascio.Id_Album -> Album.Id
@@ -24,16 +27,16 @@ Lo schema ristrutturato contiene solamente costrutti mappabili in corrispettivi 
   - Produzione.Id_Canzone -> Canzone.Id
   - (Produzione.Nome_Tecnico, Produzione.Cognome_Tecnico, Produzione.Data_Nascita_Tecnico) -> Tecnico.(Nome, Cognome, Data_Nascita) 
 - *Tecnico*(#underline[Nome, Cognome, Data_Nascita*], Nazionalità)
-- *Artista*(#underline[Nome_D'Arte], Nome_CasaDiscografica)
+- *Artista*(#underline[Nome_DArte], Nome_CasaDiscografica)
   - Artista.Nome_CasaDiscografica -> CasaDiscografica.Nome
 - *CasaDiscografica*(#underline[Nome], Sede_legale)
-- *Singolo*(#underline[NomeArte], Nome, Cognome, Data_Nascita, Nazionalità)
-  - Singolo.NomeArte -> Artista.Nome_D'arte
+- *Singolo*(#underline[Nome_DArte], Nome, Cognome, Data_Nascita, Nazionalità, Contratto)
+  - Singolo.Contratto -> CasaDiscografica.Nome
 - *Membro*(#underline[Nome_Singolo, Nome_Band])
   - Membro.Nome_Singolo -> Singolo.NomeArte 
   - Membro.Nome_Band -> Band.NomeBand
-- *Band*(#underline[NomeBand], Anno_Fondazione)
-  - Band.NomeBand -> Artista.Nome_D'arte
+- *Band*(#underline[Nome_Darte], Anno_Fondazione, contratto)
+  - Band.Contratto -> CasaDiscografica.Nome
 - *NuovaCanzone*(#underline[Id_Canzone, Campione_Data, Campione_Utente])
   - (NuovaCanzone.Campione_Utente, NuovaCanzone.Campione_Data) -> Campione.(Utente, Data_Creazione)
   - NuovaCanzone.Id_Canzone -> Canzone.Id
