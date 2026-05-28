@@ -24,7 +24,7 @@ CREATE TABLE Tecnico (
     Nome VARCHAR(20),
     Cognome VARCHAR(20),
     Data_Nascita DATE,
-    Nazionalita VARCHAR(20) NOT NULL,
+    Nazionalita VARCHAR(20),
     PRIMARY KEY (Nome, Cognome, Data_Nascita)
 );
 
@@ -40,14 +40,14 @@ CREATE TABLE Album (
 CREATE TABLE Campione (
     Data_Creazione DATE,
     Utente VARCHAR(30),
-    Canzone_Id INT NOT NULL,
+    Canzone_Id INT,
     Descrizione VARCHAR(100) NOT NULL,
     pitch INT NOT NULL, 
     bpm INT NOT NULL,
     has_ehco BOOL NOT NULL,
     Is_invertita BOOL NOT NULL,
-    url VARCHAR(50) NOT NULL,
-    PRIMARY KEY (Data_Creazione, Utente),
+    url VARCHAR(50),
+    PRIMARY KEY (Data_Creazione, Utente, Canzone_Id),
     FOREIGN KEY(Utente) REFERENCES Utente(Email),
     FOREIGN KEY(Canzone_Id) REFERENCES Canzone(Id)
 );
@@ -66,20 +66,19 @@ CREATE TABLE Produzione (
     Nome_Tecnico VARCHAR(20),
     Cognome_Tecnico VARCHAR(20),
     Data_Nascita_Tecnico DATE NOT NULL,
-    Ruolo VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico),
+    Ruolo VARCHAR(20),
+    PRIMARY KEY (Id_Canzone, Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico, Ruolo),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (Nome_Tecnico, Cognome_Tecnico, Data_Nascita_Tecnico) REFERENCES Tecnico(Nome, Cognome, Data_Nascita)
 );
 
 CREATE TABLE Singolo (
-    Nome VARCHAR(20) NOT NULL,
-    Cognome VARCHAR(20) NOT NULL,
-    Data_Nascita DATE NOT NULL,
-    Nazionalita VARCHAR(20) NOT NULL,
-    Nome_DArte VARCHAR(20),
+    Nome VARCHAR(20),
+    Cognome VARCHAR(20),
+    Data_Nascita DATE,
+    Nazionalita VARCHAR(20),
+    Nome_DArte VARCHAR(20) PRIMARY KEY,
     Contratto VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Nome_DArte),
     FOREIGN KEY (Contratto) REFERENCES CasaDiscografica(Nome)
 );
 
@@ -111,8 +110,8 @@ CREATE TABLE CreazioneBand (
 CREATE TABLE Rilascio (
     Id_Canzone INT,
     Id_Album INT,
-    Numero_traccia INT NOT NULL,
-    PRIMARY KEY (Id_Canzone, Id_Album),
+    Numero_traccia INT,
+    PRIMARY KEY (Id_Canzone, Id_Album, Numero_traccia),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (Id_Album) REFERENCES Album(Id)
 );
