@@ -55,10 +55,11 @@ CREATE TABLE Campione (
 CREATE TABLE NuovaCanzone (
     Id_Canzone INT,
     Campione_Data DATE,
-    Campione_Utente VARCHAR(20),
+    Campione_Utente VARCHAR(30),
+    Campione_Canzone_Id INT,
     PRIMARY KEY (Id_Canzone, Campione_Data, Campione_Utente),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
-    FOREIGN KEY (Campione_Data, Campione_Utente) REFERENCES Campione(Data_Creazione, Utente)
+    FOREIGN KEY (Campione_Data, Campione_Utente, Campione_Canzone_Id) REFERENCES Campione(Data_Creazione, Utente, Canzone_Id)
 );
 
 CREATE TABLE Produzione (
@@ -440,3 +441,7 @@ WHERE Totale_Campioni = (SELECT MAX(Totale_Campioni) FROM Vista_Conteggio_Campio
 
 -- Creazione dell'indice basato su hash per ottimizzare la clausola WHERE di query 1
 CREATE INDEX idx_canzone_genere ON Canzone USING hash (Genere);
+
+-- Creazione dell'indice basato su B+ tree per ottimizzare la query 4
+CREATE INDEX idx_bpm ON campione USING BTREE (bpm);
+CREATE INDEX idx_bpm ON canzone USING BTREE (bpm);
