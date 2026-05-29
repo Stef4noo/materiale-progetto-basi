@@ -7,7 +7,7 @@
 #define PG_HOST "localhost"
 #define PG_USER "postgres"
 #define PG_DB "Musica"
-#define PG_PASS "Ctynnul65g"
+#define PG_PASS "password"
 #define PG_PORT 5432
 
 void checkResults(PGresult *res, const PGconn *conn) {
