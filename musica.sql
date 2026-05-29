@@ -13,7 +13,7 @@ CREATE TABLE Canzone (
     Data_rilascio DATE NOT NULL,
     Titolo VARCHAR(20) NOT NULL,
     Genere VARCHAR(20) NOT NULL,
-    url VARCHAR(50) NOT NULL,
+    url VARCHAR(50),
     bpm INT NOT NULL,
     Tipo VARCHAR(15) NOT NULL,
     Originale INT,
