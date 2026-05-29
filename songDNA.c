@@ -7,7 +7,7 @@
 #define PG_HOST "localhost"
 #define PG_USER "postgres"
 #define PG_DB "Musica"
-#define PG_PASS "Password:)"
+#define PG_PASS "Ctynnul65g"
 #define PG_PORT 5432
 
 void checkResults(PGresult *res, const PGconn *conn) {
@@ -143,20 +143,44 @@ int main() {
                          "GROUP BY C.Titolo "
                          "HAVING SUM(CA.pitch) >= 1; ";
 
-    const char *query3 = "DROP VIEW IF EXISTS Vista_Collaborazioni; "
+    const char *query3 = "DROP VIEW IF EXISTS Vista_Tutti_Autori CASCADE; "
+                         "CREATE VIEW Vista_Tutti_Autori AS "
+                         "SELECT Id_Canzone, NomeSingolo AS Nome_Artista FROM CreazioneSingolo "
+                         "UNION ALL "
+                         "SELECT Id_Canzone, NomeBand AS Nome_Artista FROM CreazioneBand; "
+
+                         "DROP VIEW IF EXISTS Vista_Collaborazioni; "
                          "CREATE VIEW Vista_Collaborazioni AS "
                          "SELECT "
-                         "C1.Nome_Artista AS Artista_1, "
-                         "C2.Nome_Artista AS Artista_2, "
-                         "COUNT(*) AS Numero_Collaborazioni "
-                         "FROM Creazione C1 "
-                         "JOIN Creazione C2 ON C1.Id_Canzone = C2.Id_Canzone "
-                         "AND C1.Nome_Artista < C2.Nome_Artista "
-                         "GROUP BY C1.Nome_Artista, C2.Nome_Artista; "
+                            "C1.Nome_Artista AS Artista_1, "
+                            "C2.Nome_Artista AS Artista_2, "
+                            "COUNT(*) AS Numero_Collaborazioni "
+                        "FROM Vista_Tutti_Autori C1 "
+                        "JOIN Vista_Tutti_Autori C2 ON C1.Id_Canzone = C2.Id_Canzone "
+                            "AND C1.Nome_Artista < C2.Nome_Artista "
+                        "WHERE "
+                        "NOT EXISTS ( "
+                        "SELECT * FROM Membro M1 "
+                        "JOIN Membro M2 ON M1.Nome_Band = M2.Nome_Band "
+                        "WHERE M1.Nome_Singolo = C1.Nome_Artista "
+                            "AND M2.Nome_Singolo = C2.Nome_Artista"
+                        ") "
+                        "AND NOT EXISTS ( "
+                        "SELECT * FROM Membro "
+                        "WHERE Nome_Singolo = C1.Nome_Artista "
+                        "AND Nome_Band = C2.Nome_Artista "
+                        ") "
+                        "AND NOT EXISTS ( "
+                        "SELECT * FROM Membro "
+                        "WHERE Nome_Singolo = C2.Nome_Artista "
+                            "AND Nome_Band = C1.Nome_Artista "
+                        ") "
+                        "GROUP BY C1.Nome_Artista, C2.Nome_Artista; "
 
-                         "SELECT Artista_1, Artista_2, Numero_Collaborazioni "
-                         "FROM Vista_Collaborazioni "
-                         " WHERE Numero_Collaborazioni = (SELECT MAX(Numero_Collaborazioni) FROM Vista_Collaborazioni); ";
+                        "SELECT Artista_1, Artista_2, Numero_Collaborazioni "
+                        "FROM Vista_Collaborazioni "
+                        "WHERE Numero_Collaborazioni = (SELECT MAX(Numero_Collaborazioni) FROM Vista_Collaborazioni); ";
+
 
     const char *query4 = "SELECT "
                          "Ca.Data_Creazione, "
