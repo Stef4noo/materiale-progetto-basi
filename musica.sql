@@ -361,22 +361,7 @@ JOIN Campione CA ON C.Id = CA.Canzone_Id
 GROUP BY C.Titolo
 HAVING SUM(CA.pitch) >= 1;
 
--- Query 3: i due artisti che hanno collaborato di più assieme 
-CREATE VIEW Vista_Collaborazioni AS
-SELECT 
-    C1.NomeSingolo AS Artista_1, 
-    C2.NomeSingolo AS Artista_2, 
-    COUNT(*) AS Numero_Collaborazioni
-FROM CreazioneSingolo C1
-JOIN CreazioneSingolo C2 ON C1.Id_Canzone = C2.Id_Canzone 
-                 AND C1.NomeSingolo < C2.NomeSingolo
-GROUP BY C1.NomeSingolo, C2.NomeSingolo;
-
-SELECT Artista_1, Artista_2, Numero_Collaborazioni
-FROM Vista_Collaborazioni
-WHERE Numero_Collaborazioni = (SELECT MAX(Numero_Collaborazioni) FROM Vista_Collaborazioni);
-
--- Query 3plus: i due artisti che hanno collaborato di più assieme che non facciano parte della stessa band
+-- Query 3: i due artisti che hanno collaborato di più assieme che non facciano parte della stessa band
 CREATE VIEW Vista_Tutti_Autori AS
 SELECT Id_Canzone, NomeSingolo AS Nome_Artista FROM CreazioneSingolo
 UNION ALL
@@ -439,9 +424,7 @@ SELECT Canzone_Id, Titolo, Genere, Totale_Campioni
 FROM Vista_Conteggio_Campioni
 WHERE Totale_Campioni = (SELECT MAX(Totale_Campioni) FROM Vista_Conteggio_Campioni);
 
--- Creazione dell'indice basato su hash per ottimizzare la clausola WHERE di query 1
-CREATE INDEX idx_canzone_genere ON Canzone USING hash (Genere);
 
--- Creazione dell'indice basato su B+ tree per ottimizzare la query 4
+-- Creazione degli indici basati su B+ tree per ottimizzare la query 4
 CREATE INDEX idx_bpm ON campione USING BTREE (bpm);
 CREATE INDEX idx_bpm ON canzone USING BTREE (bpm);
