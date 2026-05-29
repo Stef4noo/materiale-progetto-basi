@@ -57,7 +57,7 @@ CREATE TABLE NuovaCanzone (
     Campione_Data DATE,
     Campione_Utente VARCHAR(30),
     Campione_Canzone_Id INT,
-    PRIMARY KEY (Id_Canzone, Campione_Data, Campione_Utente),
+    PRIMARY KEY (Id_Canzone, Campione_Data, Campione_Utente, Campione_Canzone_Id),
     FOREIGN KEY (Id_Canzone) REFERENCES Canzone(Id),
     FOREIGN KEY (Campione_Data, Campione_Utente, Campione_Canzone_Id) REFERENCES Campione(Data_Creazione, Utente, Canzone_Id)
 );
@@ -262,10 +262,10 @@ INSERT INTO Campione (Data_Creazione, Utente, Canzone_Id, Descrizione, pitch, bp
 
 
 -- 10. NUOVA CANZONE 
-INSERT INTO NuovaCanzone (Id_Canzone, Campione_Data, Campione_Utente) VALUES
-(122, '2026-01-10', 'leo@email.com'),
-(122, '2026-01-12', 'leo@email.com'),
-(123, '2026-03-01', 'marco@email.com');
+INSERT INTO NuovaCanzone (Id_Canzone, Campione_Data, Campione_Utente, Campione_Canzone_Id) VALUES
+(122, '2026-01-10', 'leo@email.com', 101),
+(122, '2026-01-12', 'leo@email.com', 101),
+(123, '2026-03-01', 'marco@email.com', 105);
 
 -- 11. CREAZIONE SINGOLO (Solo entità Singolo con rispettivo Ruolo)
 INSERT INTO CreazioneSingolo (Id_Canzone, NomeSingolo, Ruolo) VALUES
